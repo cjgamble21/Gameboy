@@ -1,4 +1,4 @@
-struct FlagRegister {
+pub struct FlagRegister {
     pub zero: bool,
     pub sub: bool,
     pub half_carry: bool,
@@ -45,4 +45,15 @@ pub struct Registers {
     pub f: FlagRegister, // flags
     pub sp: u16, // stack pointer
     pub pc: u16, // program counter
+}
+
+impl Registers {
+    pub fn bc(&self) -> u16 {
+        ((self.b << 8) as u16) | (self.c as u16)
+    }
+
+    pub fn set_bc(&mut self, value: u16) {
+        self.b = ((value & 0xff00) >> 8) as u8;
+        self.c = (value & 0x00ff) as u8;
+    }
 }
