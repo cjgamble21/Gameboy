@@ -1,9 +1,21 @@
 use crate::registers::Registers;
 use crate::Memory;
+use crate::instructions::Instruction;
 
 const BUS_SIZE: usize = 65536; // 64 KB
 
-struct CPU {
+const INSTRUCTIONS: [Instruction; 8] = [
+    Instruction::new("NOP", CPU::nop, 1),
+    Instruction::new("LD_BC_NN", CPU::ld_bc_nn, 3),
+    Instruction::new("LD_MEM_BC_A", CPU::ld_mem_bc_a, 2),
+    Instruction::new("INC_BC", CPU::inc_bc, 2),
+    Instruction::new("INC_B", CPU::inc_b, 1),
+    Instruction::new("DEC_B", CPU::dec_b, 1),
+    Instruction::new("LD_IMM_B", CPU::ld_imm_b, 2),
+    Instruction::new("RLC_A", CPU::rlc_a, 1),
+];
+
+pub struct CPU {
     memory: [u8; BUS_SIZE],
     registers: Registers,
     cycles: i32,
@@ -51,6 +63,8 @@ impl CPU {
             0x03 => self.inc_bc(),
             0x04 => self.inc_b(),
             0x05 => self.dec_b(),
+            0x06 => self.ld_imm_b(),
+            0x07 => self.rlc_a(),
             _ => unimplemented!("Unimplemented opcode..."),
         }
     }
@@ -66,24 +80,18 @@ impl CPU {
         let data = ((high_byte << 8) | low_byte) as u16;
 
         self.registers.set_bc(data);
-
-        self.cycles += 3;
     }
 
     fn ld_mem_bc_a(&mut self) {
         let addr = self.registers.bc();
 
         self.write(addr, self.registers.a);
-
-        self.cycles += 2;
     }
 
     fn inc_bc(&mut self) {
         let mut data = self.registers.bc();
         data += 1;
         self.registers.set_bc(data);
-
-        self.cycles += 2;
     }
 
     fn inc_b(&mut self) {
@@ -93,8 +101,6 @@ impl CPU {
 
         self.set_zero_flag(self.registers.b);
         self.set_sub_flag(false);
-
-        self.cycles += 1;
     }
 
     fn dec_b(&mut self) {
@@ -103,13 +109,20 @@ impl CPU {
 
         self.set_zero_flag(self.registers.b);
         self.set_sub_flag(true);
-
-        self.cycles += 1;
     }
 
     fn ld_imm_b(&mut self) {
         let data = self.read(self.registers.pc);
         self.registers.pc += 1;
         self.registers.b = data;
+    }
+
+    fn rlc_a(&mut self) {
+        let most_significant_bit = (self.registers.a & 0x80) >> 7;
+
+        self.registers.f.carry = most_significant_bit == 1;
+        self.registers.a = (self.registers.a << 1) | most_significant_bit;
+
+        self.registers.pc += 1;
     }
 }

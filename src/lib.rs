@@ -1,5 +1,6 @@
 mod registers;
 mod cpu;
+mod instructions;
 
 trait Memory {
     fn read(&self, addr: u16) -> u8;
