@@ -32,6 +32,19 @@ impl Memory for CPU {
 }
 
 impl CPU {
+    pub fn tick(&mut self) {
+        let opcode = self.read(self.registers.pc);
+        self.registers.pc += 1;
+
+        self.execute(opcode);
+    }
+
+    fn execute(&mut self, opcode: u8) {
+        let instruction = &INSTRUCTIONS[opcode as usize];
+
+        (instruction.function)(self)
+    }
+
     fn set_zero_flag(&mut self, result: u8) {
         if result == 0 {
             self.registers.f.zero = true;
@@ -54,20 +67,6 @@ impl CPU {
         self.registers.f.half_carry = half_carry;
     }
 
-    fn execute(&mut self, opcode: u8) {
-        // increment program counter before hand
-        match opcode {
-            0x00 => self.nop(),
-            0x01 => self.ld_bc_nn(),
-            0x02 => self.ld_mem_bc_a(),
-            0x03 => self.inc_bc(),
-            0x04 => self.inc_b(),
-            0x05 => self.dec_b(),
-            0x06 => self.ld_imm_b(),
-            0x07 => self.rlc_a(),
-            _ => unimplemented!("Unimplemented opcode..."),
-        }
-    }
     fn nop(&mut self) {}
 
     fn ld_bc_nn(&mut self) {

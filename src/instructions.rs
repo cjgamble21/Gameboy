@@ -4,7 +4,7 @@ type InstructionFn = fn(&mut CPU);
 
 pub struct Instruction {
     name: &'static str,
-    function: InstructionFn,
+    pub function: InstructionFn,
     cycles: i32,
 }
 
