@@ -4,7 +4,7 @@ use crate::instructions::Instruction;
 
 const BUS_SIZE: usize = 65536; // 64 KB
 
-const INSTRUCTIONS: [Instruction; 8] = [
+const INSTRUCTIONS: [Instruction; 10] = [
     Instruction::new("NOP", CPU::nop, 1),
     Instruction::new("LD_BC_NN", CPU::ld_bc_nn, 3),
     Instruction::new("LD_MEM_BC_A", CPU::ld_mem_bc_a, 2),
@@ -13,6 +13,8 @@ const INSTRUCTIONS: [Instruction; 8] = [
     Instruction::new("DEC_B", CPU::dec_b, 1),
     Instruction::new("LD_IMM_B", CPU::ld_imm_b, 2),
     Instruction::new("RLC_A", CPU::rlc_a, 1),
+    Instruction::new("LD_MEM_SP", CPU::ld_mem_sp, 5),
+    Instruction::new("ADD_HL_BC", CPU::add_hl_bc, 2),
 ];
 
 pub struct CPU {
@@ -42,7 +44,9 @@ impl CPU {
     fn execute(&mut self, opcode: u8) {
         let instruction = &INSTRUCTIONS[opcode as usize];
 
-        (instruction.function)(self)
+        (instruction.function)(self);
+
+        self.cycles += instruction.cycles;
     }
 
     fn set_zero_flag(&mut self, result: u8) {
@@ -124,4 +128,22 @@ impl CPU {
 
         self.registers.pc += 1;
     }
+
+    fn ld_mem_sp(&mut self) {
+        let low_byte = self.read(self.registers.pc);
+        self.registers.pc += 1;
+
+        let high_byte = self.read(self.registers.pc);
+        self.registers.pc += 1;
+
+        let addr = ((high_byte << 8) | low_byte) as u16;
+
+        let low_byte_sp = (self.registers.sp & 0x00ff) as u8;
+        let high_byte_sp = (self.registers.sp >> 4) as u8;
+
+        self.write(addr, low_byte_sp);
+        self.write(addr + 1, high_byte_sp);
+    }
+
+    fn add_hl_bc(&mut self) {}
 }

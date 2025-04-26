@@ -1,3 +1,5 @@
+use paste::paste;
+
 pub struct FlagRegister {
     pub zero: bool,
     pub sub: bool,
@@ -47,13 +49,25 @@ pub struct Registers {
     pub pc: u16, // program counter
 }
 
-impl Registers {
-    pub fn bc(&self) -> u16 {
-        ((self.b << 8) as u16) | (self.c as u16)
-    }
+macro_rules! reg_pairs {
+    ($high:ident, $low:ident) => {
+        paste! {
+            #[inline]
+            pub fn [<$high $low>](&self) -> u16 {
+                ((self.$high as u16) << 8) | (self.$low as u16)
+            }
 
-    pub fn set_bc(&mut self, value: u16) {
-        self.b = ((value & 0xff00) >> 8) as u8;
-        self.c = (value & 0x00ff) as u8;
-    }
+            #[inline]
+            pub fn [<set_ $high $low>](&mut self, val: u16) {
+                self.$high = (val >> 8) as u8;
+                self.$low  = (val as  u8);
+            }
+        }
+    };
+}
+
+impl Registers {
+    reg_pairs!(b, c);
+    reg_pairs!(d, e);
+    reg_pairs!(h, l);
 }

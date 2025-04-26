@@ -5,7 +5,7 @@ type InstructionFn = fn(&mut CPU);
 pub struct Instruction {
     name: &'static str,
     pub function: InstructionFn,
-    cycles: i32,
+    pub cycles: i32,
 }
 
 impl Instruction {
