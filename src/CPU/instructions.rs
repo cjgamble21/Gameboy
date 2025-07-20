@@ -1,4 +1,4 @@
-use crate::cpu::CPU;
+use super::CPU;
 
 type InstructionFn = fn(&mut CPU);
 
