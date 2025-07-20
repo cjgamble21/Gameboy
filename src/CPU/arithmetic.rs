@@ -81,6 +81,7 @@ impl CPU {
     inc_16_bit!(bc);
     inc_16_bit!(de);
     inc_16_bit!(hl);
+    #[inline]
     pub(crate) fn inc_sp(&mut self) {
         self.registers.sp = self.registers.sp.wrapping_add(1);
     }
@@ -89,6 +90,7 @@ impl CPU {
     dec_16_bit!(bc);
     dec_16_bit!(de);
     dec_16_bit!(hl);
+    #[inline]
     pub(crate) fn dec_sp(&mut self) {
         self.registers.sp = self.registers.sp.wrapping_sub(1);
     }

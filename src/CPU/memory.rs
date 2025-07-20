@@ -1,8 +1,33 @@
 use super::CPU;
 use crate::Memory;
+use paste::paste;
+use super::registers::Registers;
+
+/*
+    ld -> Load
+    str -> Store
+    Imm -> Immediate
+
+    All functions follow this template:
+    (ld | str)_(source)_(destination)
+
+    So "ld_imm_bc" stands for "Load immediate value into register BC"
+*/
+
+macro_rules! ld_imm_16_bit {
+    ($reg:ident, $setter:expr) => {
+        paste! {
+            #[inline]
+            pub(crate) fn [<ld_imm_$reg>](&mut self) {
+                self.ld_imm_16_bit($setter)
+            }
+        }
+    };
+}
 
 impl CPU {
-    pub(crate) fn ld_bc_nn(&mut self) {
+    // Loading immediate values to 16 bit register pairs
+    fn ld_imm_16_bit(&mut self, set_fn: fn(&mut Registers, u16)) {
         let low_byte = self.read(self.registers.pc);
         self.registers.pc += 1;
 
@@ -11,10 +36,17 @@ impl CPU {
 
         let data = ((high_byte as u16) << 8) | (low_byte as u16);
 
-        self.registers.set_bc(data);
+        set_fn(&mut self.registers, data)
     }
 
-    pub(crate) fn ld_mem_bc_a(&mut self) {
+    ld_imm_16_bit!(bc, Registers::set_bc);
+    ld_imm_16_bit!(de, Registers::set_de);
+    ld_imm_16_bit!(hl, Registers::set_hl);
+    ld_imm_16_bit!(sp, |reg, value| {
+        reg.sp = value;
+    });
+
+    pub(crate) fn str_bc_a(&mut self) {
         let addr = self.registers.bc();
 
         self.write(addr, self.registers.a);
@@ -26,7 +58,7 @@ impl CPU {
         self.registers.b = data;
     }
 
-    pub(crate) fn ld_mem_sp(&mut self) {
+    pub(crate) fn str_sp_mem(&mut self) {
         let low_byte = self.read(self.registers.pc);
         self.registers.pc += 1;
 
@@ -42,7 +74,7 @@ impl CPU {
         self.write(addr + 1, high_byte_sp);
     }
 
-    pub(crate) fn ld_mem_a_bc(&mut self) {
+    pub(crate) fn ld_bc_a(&mut self) {
         let value = self.read(self.registers.bc());
 
         self.registers.a = value;
