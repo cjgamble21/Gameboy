@@ -7,6 +7,12 @@ pub struct FlagRegister {
     pub carry: bool,
 }
 
+impl FlagRegister {
+    pub fn new() -> Self {
+        FlagRegister { zero: false, sub: false, half_carry: false, carry: false }
+    }
+}
+
 impl std::convert::From<FlagRegister> for u8 {
     fn from(value: FlagRegister) -> Self {
         let a = if value.zero { 1 } else { 0 };
@@ -67,6 +73,10 @@ macro_rules! reg_pairs {
 }
 
 impl Registers {
+    pub fn new() -> Self {
+        Registers { a: 0, b: 0, c: 0, d: 0, e: 0, h: 0, l: 0, f: FlagRegister::new(), sp: 0, pc: 0 }
+    }
+
     reg_pairs!(b, c);
     reg_pairs!(d, e);
     reg_pairs!(h, l);

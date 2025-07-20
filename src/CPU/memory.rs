@@ -6,7 +6,8 @@ use super::registers::Registers;
 /*
     ld -> Load
     str -> Store
-    Imm -> Immediate
+    imm -> Immediate
+    ind -> Indirect
 
     All functions follow this template:
     (ld | str)_(source)_(destination)
@@ -18,7 +19,7 @@ macro_rules! ld_imm_16_bit {
     ($reg:ident, $setter:expr) => {
         paste! {
             #[inline]
-            pub(crate) fn [<ld_imm_$reg>](&mut self) {
+            pub(super) fn [<ld_imm_$reg>](&mut self) {
                 self.ld_imm_16_bit($setter)
             }
         }
@@ -26,13 +27,11 @@ macro_rules! ld_imm_16_bit {
 }
 
 impl CPU {
-    // Loading immediate values to 16 bit register pairs
+    // Load immediate value to 16 bit register pairs
     fn ld_imm_16_bit(&mut self, set_fn: fn(&mut Registers, u16)) {
-        let low_byte = self.read(self.registers.pc);
-        self.registers.pc += 1;
+        let low_byte = self.read_from_pc();
 
-        let high_byte = self.read(self.registers.pc);
-        self.registers.pc += 1;
+        let high_byte = self.read_from_pc();
 
         let data = ((high_byte as u16) << 8) | (low_byte as u16);
 
@@ -46,24 +45,28 @@ impl CPU {
         reg.sp = value;
     });
 
-    pub(crate) fn str_bc_a(&mut self) {
+    // Load immediate value to 8 bit register
+    fn ld_imm_8_bit(&mut self) {
+        let immediate = self.read_from_pc();
+    }
+
+    // Load indirect value to 8 bit register
+
+    pub(super) fn str_bc_a(&mut self) {
         let addr = self.registers.bc();
 
         self.write(addr, self.registers.a);
     }
 
-    pub(crate) fn ld_imm_b(&mut self) {
-        let data = self.read(self.registers.pc);
-        self.registers.pc += 1;
+    pub(super) fn ld_imm_b(&mut self) {
+        let data = self.read_from_pc();
         self.registers.b = data;
     }
 
-    pub(crate) fn str_sp_mem(&mut self) {
-        let low_byte = self.read(self.registers.pc);
-        self.registers.pc += 1;
+    pub(super) fn str_sp_mem(&mut self) {
+        let low_byte = self.read_from_pc();
 
-        let high_byte = self.read(self.registers.pc);
-        self.registers.pc += 1;
+        let high_byte = self.read_from_pc();
 
         let addr = ((high_byte as u16) << 8) | (low_byte as u16);
 
@@ -74,15 +77,14 @@ impl CPU {
         self.write(addr + 1, high_byte_sp);
     }
 
-    pub(crate) fn ld_bc_a(&mut self) {
+    pub(super) fn ld_bc_a(&mut self) {
         let value = self.read(self.registers.bc());
 
         self.registers.a = value;
     }
 
-    pub(crate) fn ld_imm_c(&mut self) {
-        let value = self.read(self.registers.pc);
-        self.registers.pc += 1;
+    pub(super) fn ld_imm_c(&mut self) {
+        let value = self.read_from_pc();
 
         self.registers.c = value;
     }

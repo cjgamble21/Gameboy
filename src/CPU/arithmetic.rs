@@ -5,8 +5,7 @@ use paste::paste;
 macro_rules! inc_8_bit {
     ($reg:ident) => {
         paste! {
-            #[inline]
-            pub(crate) fn [<inc_$reg>](&mut self) {
+            pub(super) fn [<inc_$reg>](&mut self) {
                 self.set_half_carry_add(self.registers.$reg, self.registers.$reg + 1);
 
                 self.registers.$reg += 1;
@@ -21,8 +20,7 @@ macro_rules! inc_8_bit {
 macro_rules! dec_8_bit {
     ($reg:ident) => {
         paste! {
-            #[inline]
-            pub(crate) fn [<dec_ $reg>](&mut self) {
+            pub(super) fn [<dec_ $reg>](&mut self) {
                 self.set_half_carry_sub(self.registers.$reg, self.registers.$reg - 1);
 
                 self.registers.$reg -= 1;
@@ -37,8 +35,7 @@ macro_rules! dec_8_bit {
 macro_rules! inc_16_bit {
     ($reg:ident) => {
         paste! {
-            #[inline]
-            pub(crate) fn [<inc_ $reg>](&mut self) {
+            pub(super) fn [<inc_ $reg>](&mut self) {
                 let data = self.registers.$reg();
                 self.registers.[<set_ $reg>](data.wrapping_add(1));
             }
@@ -49,8 +46,7 @@ macro_rules! inc_16_bit {
 macro_rules! dec_16_bit {
     ($reg:ident) => {
         paste! {
-            #[inline]
-            pub(crate) fn [<dec_ $reg>](&mut self) {
+            pub(super) fn [<dec_ $reg>](&mut self) {
                 let data = self.registers.$reg();
                 self.registers.[<set_ $reg>](data.wrapping_sub(1));
             }
@@ -82,7 +78,7 @@ impl CPU {
     inc_16_bit!(de);
     inc_16_bit!(hl);
     #[inline]
-    pub(crate) fn inc_sp(&mut self) {
+    pub(super) fn inc_sp(&mut self) {
         self.registers.sp = self.registers.sp.wrapping_add(1);
     }
 
@@ -91,11 +87,11 @@ impl CPU {
     dec_16_bit!(de);
     dec_16_bit!(hl);
     #[inline]
-    pub(crate) fn dec_sp(&mut self) {
+    pub(super) fn dec_sp(&mut self) {
         self.registers.sp = self.registers.sp.wrapping_sub(1);
     }
 
-    pub(crate) fn add_hl_bc(&mut self) {
+    pub(super) fn add_hl_bc(&mut self) {
         let half_carry = half_carry_occurred_16(self.registers.bc(), self.registers.hl());
         let carry = carry_occurred_16(self.registers.bc(), self.registers.hl());
 

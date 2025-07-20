@@ -52,11 +52,25 @@ impl Memory for CPU {
 }
 
 impl CPU {
+    pub fn new() -> Self {
+        CPU {
+            memory: [0; BUS_SIZE],
+            registers: Registers::new(),
+            cycles: 0,
+        }
+    }
+
     pub fn tick(&mut self) {
-        let opcode = self.read(self.registers.pc);
-        self.registers.pc += 1;
+        let opcode = self.read_from_pc();
 
         self.execute(opcode);
+    }
+
+    // TODO: Verify we always need to increment PC after reading from it
+    fn read_from_pc(&mut self) -> u8 {
+        let value = self.read(self.registers.pc);
+        self.registers.pc += 1;
+        value
     }
 
     fn execute(&mut self, opcode: u8) {
