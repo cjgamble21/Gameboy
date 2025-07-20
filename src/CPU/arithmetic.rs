@@ -22,7 +22,7 @@ macro_rules! dec_8_bit {
     ($reg:ident) => {
         paste! {
             #[inline]
-            pub(crate) fn [<dec_$reg>](&mut self) {
+            pub(crate) fn [<dec_ $reg>](&mut self) {
                 self.set_half_carry_sub(self.registers.$reg, self.registers.$reg - 1);
 
                 self.registers.$reg -= 1;
@@ -34,13 +34,31 @@ macro_rules! dec_8_bit {
     };
 }
 
-impl CPU {
-    pub(crate) fn inc_bc(&mut self) {
-        let mut data = self.registers.bc();
-        data += 1;
-        self.registers.set_bc(data);
-    }
+macro_rules! inc_16_bit {
+    ($reg:ident) => {
+        paste! {
+            #[inline]
+            pub(crate) fn [<inc_ $reg>](&mut self) {
+                let data = self.registers.$reg();
+                self.registers.[<set_ $reg>](data.wrapping_add(1));
+            }
+        }
+    };
+}
 
+macro_rules! dec_16_bit {
+    ($reg:ident) => {
+        paste! {
+            #[inline]
+            pub(crate) fn [<dec_ $reg>](&mut self) {
+                let data = self.registers.$reg();
+                self.registers.[<set_ $reg>](data.wrapping_sub(1));
+            }
+        }
+    };
+}
+
+impl CPU {
     // Single register increments
     inc_8_bit!(a);
     inc_8_bit!(b);
@@ -59,6 +77,22 @@ impl CPU {
     dec_8_bit!(h);
     dec_8_bit!(l);
 
+    // Dual register increments
+    inc_16_bit!(bc);
+    inc_16_bit!(de);
+    inc_16_bit!(hl);
+    pub(crate) fn inc_sp(&mut self) {
+        self.registers.sp = self.registers.sp.wrapping_add(1);
+    }
+
+    // Dual register decrements
+    dec_16_bit!(bc);
+    dec_16_bit!(de);
+    dec_16_bit!(hl);
+    pub(crate) fn dec_sp(&mut self) {
+        self.registers.sp = self.registers.sp.wrapping_sub(1);
+    }
+
     pub(crate) fn add_hl_bc(&mut self) {
         let half_carry = half_carry_occurred_16(self.registers.bc(), self.registers.hl());
         let carry = carry_occurred_16(self.registers.bc(), self.registers.hl());
@@ -68,9 +102,5 @@ impl CPU {
         self.registers.f.carry = carry;
         self.registers.f.half_carry = half_carry;
         self.registers.f.sub = false;
-    }
-
-    pub(crate) fn dec_bc(&mut self) {
-        self.registers.set_bc(self.registers.bc() - 1);
     }
 }
