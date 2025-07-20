@@ -1,12 +1,10 @@
-pub mod memory;
-pub mod arithmetic;
-pub mod bitwise;
-pub mod control;
-pub mod instructions;
-pub mod registers;
+mod memory;
+mod arithmetic;
+mod bitwise;
+mod control;
+mod instructions;
+mod registers;
 mod utils;
-
-use std::ops::RangeInclusive;
 
 use registers::Registers;
 use crate::Memory;
@@ -32,7 +30,6 @@ const INSTRUCTIONS: [Instruction; 17] = [
     Instruction::new("LD_IMM_C", CPU::ld_imm_c, 2),
     Instruction::new("ROTATE_RIGHT_A", CPU::rotate_right_a, 1),
     Instruction::new("STOP", CPU::stop, 1),
-    // Instruction::new("LD_DE_A", CPU::ld_, 3)
 ];
 
 pub struct CPU {
