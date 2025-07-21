@@ -55,6 +55,9 @@ macro_rules! dec_16_bit {
 }
 
 impl CPU {
+    pub(super) fn binary_coded_decimal(&mut self) {
+        todo!("Adjusts register A to binary coded decimal number")
+    }
     // Single register increments
     inc_8_bit!(a);
     inc_8_bit!(b);

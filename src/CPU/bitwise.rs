@@ -1,6 +1,10 @@
 use super::CPU;
 
 impl CPU {
+    pub(super) fn flip_register_a(&mut self) {
+        self.registers.a = !self.registers.a;
+    }
+
     pub(super) fn rotate_left_a(&mut self) {
         let most_significant_bit = (self.registers.a & 0x80) >> 7;
 
