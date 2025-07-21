@@ -12,24 +12,25 @@ use instructions::Instruction;
 
 const BUS_SIZE: usize = 65536; // 64 KB
 
-const INSTRUCTIONS: [Instruction; 17] = [
+const INSTRUCTIONS: [Instruction; 18] = [
     Instruction::new("NOP", CPU::nop, 1),
-    Instruction::new("LD_BC_NN", CPU::ld_imm_bc, 3),
-    Instruction::new("LD_MEM_BC_A", CPU::str_bc_a, 2),
+    Instruction::new("LD_IMM_BC", CPU::ld_imm_bc, 3),
+    Instruction::new("STR_BC_A", CPU::str_ind_bc_a, 2),
     Instruction::new("INC_BC", CPU::inc_bc, 2),
     Instruction::new("INC_B", CPU::inc_b, 1),
     Instruction::new("DEC_B", CPU::dec_b, 1),
     Instruction::new("LD_IMM_B", CPU::ld_imm_b, 2),
     Instruction::new("ROTATE_LEFT_A", CPU::rotate_left_a, 1),
-    Instruction::new("LD_MEM_SP", CPU::str_sp_mem, 5),
+    Instruction::new("STR_SP_MEM", CPU::str_sp_mem, 5),
     Instruction::new("ADD_HL_BC", CPU::add_hl_bc, 2),
-    Instruction::new("LD_MEM_A_BC", CPU::ld_bc_a, 2),
+    Instruction::new("LD_IND_BC_A", CPU::ld_ind_bc_a, 2),
     Instruction::new("DEC_BC", CPU::dec_bc, 2),
     Instruction::new("INC_C", CPU::inc_c, 1),
     Instruction::new("DEC_C", CPU::dec_c, 1),
     Instruction::new("LD_IMM_C", CPU::ld_imm_c, 2),
     Instruction::new("ROTATE_RIGHT_A", CPU::rotate_right_a, 1),
     Instruction::new("STOP", CPU::stop, 1),
+    Instruction::new("LD_IMM_DE", CPU::ld_imm_de, 3),
 ];
 
 pub struct CPU {

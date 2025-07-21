@@ -4,6 +4,9 @@ trait Memory {
     fn write(&mut self, addr: u16, data: u8);
 }
 
-// fn main() {
-//     let cpu = CPU::CPU::new();
-// }
+fn main() {
+    // let mut cpu = CPU::CPU::new();
+    // cpu.tick();
+}
+
+// main();
