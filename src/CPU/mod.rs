@@ -13,7 +13,12 @@ use instructions::Instruction;
 
 const BUS_SIZE: usize = 65536; // 64 KB
 
-const INSTRUCTIONS: [Instruction; 32] = [
+/*
+    This can just be a normal const array in the future - 
+    I declared it static to avoid the language server yelling at me as I add instructions
+*/
+// Index of each instruction corresponds to its relevant opcode
+const INSTRUCTIONS: &'static [Instruction] = &[
     Instruction::new("NOP", CPU::nop, 1),
     Instruction::new("LD_IMM_BC", CPU::ld_imm_bc, 3),
     Instruction::new("STR_BC_A", CPU::str_ind_bc_a, 2),
@@ -49,7 +54,7 @@ const INSTRUCTIONS: [Instruction; 32] = [
 ];
 
 pub struct CPU {
-    memory: [u8; BUS_SIZE],
+    memory: Vec<u8>,
     registers: Registers,
     cycles: i32,
 }
@@ -66,8 +71,8 @@ impl Memory for CPU {
 
 impl CPU {
     pub fn new() -> Self {
-        CPU {
-            memory: [0; BUS_SIZE],
+        Self {
+            memory: Vec::with_capacity(BUS_SIZE),
             registers: Registers::new(),
             cycles: 0,
         }
