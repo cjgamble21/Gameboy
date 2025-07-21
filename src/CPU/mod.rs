@@ -2,6 +2,7 @@ mod memory;
 mod arithmetic;
 mod bitwise;
 mod control;
+mod branching;
 mod instructions;
 mod registers;
 mod utils;
@@ -12,7 +13,7 @@ use instructions::Instruction;
 
 const BUS_SIZE: usize = 65536; // 64 KB
 
-const INSTRUCTIONS: [Instruction; 18] = [
+const INSTRUCTIONS: [Instruction; 32] = [
     Instruction::new("NOP", CPU::nop, 1),
     Instruction::new("LD_IMM_BC", CPU::ld_imm_bc, 3),
     Instruction::new("STR_BC_A", CPU::str_ind_bc_a, 2),
@@ -31,6 +32,20 @@ const INSTRUCTIONS: [Instruction; 18] = [
     Instruction::new("ROTATE_RIGHT_A", CPU::rotate_right_a, 1),
     Instruction::new("STOP", CPU::stop, 1),
     Instruction::new("LD_IMM_DE", CPU::ld_imm_de, 3),
+    Instruction::new("LD_IND_DE_A", CPU::ld_ind_de_a, 2),
+    Instruction::new("INC_DE", CPU::inc_de, 2),
+    Instruction::new("INC_D", CPU::inc_d, 1),
+    Instruction::new("DEC_D", CPU::dec_d, 1),
+    Instruction::new("LD_IMM_D", CPU::ld_imm_d, 2),
+    Instruction::new("ROTATE_LEFT_A_WITH_CARRY", CPU::rotate_left_a_with_carry, 1),
+    Instruction::new("JUMP_SIGNED_DEFAULT", CPU::jump_signed_default, 3),
+    Instruction::new("ADD_HL_DE", CPU::nop, 2),
+    Instruction::new("LD_IND_DE_A", CPU::ld_ind_de_a, 2),
+    Instruction::new("DEC_DE", CPU::dec_de, 2),
+    Instruction::new("INC_E", CPU::inc_e, 1),
+    Instruction::new("DEC_E", CPU::dec_e, 1),
+    Instruction::new("LD_IMM_E", CPU::ld_imm_e, 2),
+    Instruction::new("ROTATE_RIGHT_A_WITH_CARRY", CPU::rotate_right_a_with_carry, 1),
 ];
 
 pub struct CPU {
