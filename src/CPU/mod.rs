@@ -11,7 +11,7 @@ use registers::Registers;
 use crate::Memory;
 use instructions::*;
 
-const BUS_SIZE: usize = 65536; // 64 KB
+const BUS_SIZE: usize = size_of::<u16>();
 
 /* 
     Future consideration for the CPU struct:

@@ -1,6 +1,8 @@
 use super::CPU;
 
-type InstructionFn = fn(&mut CPU) -> u32;
+type CPUCycles = u32;
+
+type InstructionFn = fn(&mut CPU) -> CPUCycles;
 
 pub struct Instruction {
     name: &'static str,
@@ -84,4 +86,8 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("DEC_L", CPU::dec_l, 1),
     instr!("LD_IMM_E", CPU::ld_imm_l, 2),
     instr!("CPL", CPU::flip_register_a, 1),
+    instr!("JUMP_SIGNED_CARRY_FLAG_OFF", CPU::jump_signed_carry_flag_off), // Dynamic cycle count
+    instr!("LD_IMM_SP", CPU::ld_imm_sp, 3),
+    instr!("STR_IND_HL_A_SUB", CPU::str_ind_hl_a_sub, 2),
+    instr!("INC_SP", CPU::inc_sp, 2),
 ];

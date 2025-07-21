@@ -39,4 +39,34 @@ impl CPU {
     pub(super) fn jump_signed_zero_flag_off(&mut self) -> u32 {
         self.jump_signed_zero_flag(false)
     }
+
+    fn jump_signed_carry_flag(&mut self, on: bool) -> u32 {
+        let addr = self.read_from_pc() as i8;
+
+        let carry_flag = self.registers.f.carry;
+
+        let mut num_cycles = 2;
+
+        if on {
+            if carry_flag {
+                self.jump(addr);
+                num_cycles = 3;
+            }
+        } else {
+            if !carry_flag {
+                self.jump(addr);
+                num_cycles = 3;
+            }
+        }
+
+        num_cycles
+    }
+
+    pub(super) fn jump_signed_carry_flag_on(&mut self) -> u32 {
+        self.jump_signed_carry_flag(true)
+    }
+
+    pub(super) fn jump_signed_carry_flag_off(&mut self) -> u32 {
+        self.jump_signed_carry_flag(false)
+    }
 }
