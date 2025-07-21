@@ -4,10 +4,10 @@ use paste::paste;
 use super::registers::Registers;
 
 /*
-    ld -> Load
-    str -> Store
-    imm -> Immediate
-    ind -> Indirect
+    ld -> Load memory
+    str -> Store memory
+    imm -> Immediate (Unsigned literal)
+    ind -> Indirect (Value in RAM stored at an address in a 16 bit register pair)
 
     All functions follow this template:
     (ld | str)_(source)_(destination)

@@ -53,6 +53,12 @@ const INSTRUCTIONS: &'static [Instruction] = &[
     Instruction::new("ROTATE_RIGHT_A_WITH_CARRY", CPU::rotate_right_a_with_carry, 1),
 ];
 
+/* 
+    Future consideration for the CPU struct:
+    When we get to interrupts / CPU state , can we make use of the type state pattern?
+    Might not be applicable, but I can see it being useful when dealing with halted states,
+    Interrupts being enabled / disabled, etc.
+*/
 pub struct CPU {
     memory: Vec<u8>,
     registers: Registers,
