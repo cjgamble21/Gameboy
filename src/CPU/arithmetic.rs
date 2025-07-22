@@ -56,7 +56,38 @@ macro_rules! dec_16_bit {
 
 impl CPU {
     pub(super) fn binary_coded_decimal(&mut self) {
-        todo!("Adjusts register A to binary coded decimal number")
+        let sub_flag_set = self.registers.f.sub;
+        let half_carry_flag_set = self.registers.f.half_carry;
+        let carry_flag_set = self.registers.f.carry;
+
+        let mut adjustment = 0;
+
+        let should_add_carry = carry_flag_set || self.registers.a > 0x99;
+
+        let should_add_six_to_adjustment =
+            (sub_flag_set && half_carry_flag_set) ||
+            (!sub_flag_set && (half_carry_flag_set || self.registers.a & 0xf > 0x9));
+
+        let should_add_sixty_to_adjustment =
+            (sub_flag_set && carry_flag_set) || (!sub_flag_set && should_add_carry);
+
+        if should_add_six_to_adjustment {
+            adjustment += 0x6;
+        }
+
+        if should_add_sixty_to_adjustment {
+            adjustment += 0x60;
+        }
+
+        if sub_flag_set {
+            self.registers.a -= adjustment;
+        } else {
+            self.registers.a += adjustment;
+        }
+
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.half_carry = false;
+        self.registers.f.carry = should_add_carry;
     }
     // Single register increments
     inc_8_bit!(a);
