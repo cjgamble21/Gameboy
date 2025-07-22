@@ -143,6 +143,15 @@ impl CPU {
         cpu.decrement_hl();
     });
 
+    // Store immediate value in address provided by indirect register memory
+    pub(super) fn str_imm_ind_hl(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read_from_pc();
+
+        self.write(addr, value);
+    }
+
     pub(super) fn str_sp_mem(&mut self) {
         let low_byte = self.read_from_pc();
 

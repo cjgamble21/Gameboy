@@ -1,3 +1,5 @@
+use crate::Memory;
+
 use super::CPU;
 use super::utils::*;
 use paste::paste;
@@ -7,11 +9,10 @@ macro_rules! inc_8_bit {
         paste! {
             pub(super) fn [<inc_$reg>](&mut self) {
                 self.set_half_carry_add(self.registers.$reg, self.registers.$reg + 1);
+                self.set_sub_flag(false);
 
                 self.registers.$reg += 1;
-
                 self.set_zero_flag(self.registers.$reg);
-                self.set_sub_flag(false);
             }
         }
     };
@@ -22,11 +23,10 @@ macro_rules! dec_8_bit {
         paste! {
             pub(super) fn [<dec_ $reg>](&mut self) {
                 self.set_half_carry_sub(self.registers.$reg, self.registers.$reg - 1);
+                self.set_sub_flag(true);
 
                 self.registers.$reg -= 1;
-
                 self.set_zero_flag(self.registers.$reg);
-                self.set_sub_flag(true);
             }
         }
     };
@@ -116,6 +116,22 @@ impl CPU {
         self.registers.sp = self.registers.sp.wrapping_add(1);
     }
 
+    // Dual register increment of memory location
+    pub(super) fn inc_ind_hl(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        let new_value = value + 1;
+
+        self.set_half_carry_add(value, new_value);
+
+        self.set_zero_flag(new_value);
+        self.set_sub_flag(false);
+
+        self.write(addr, new_value);
+    }
+
     // Dual register decrements
     dec_16_bit!(bc);
     dec_16_bit!(de);
@@ -123,6 +139,22 @@ impl CPU {
     #[inline]
     pub(super) fn dec_sp(&mut self) {
         self.registers.sp = self.registers.sp.wrapping_sub(1);
+    }
+
+    // Dual register decrement of memory location
+    pub(super) fn dec_ind_hl(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        let new_value = value - 1;
+
+        self.set_half_carry_add(value, new_value);
+
+        self.set_zero_flag(new_value);
+        self.set_sub_flag(true);
+
+        self.write(addr, new_value);
     }
 
     pub(super) fn add_hl_bc(&mut self) {

@@ -90,4 +90,16 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("LD_IMM_SP", CPU::ld_imm_sp, 3),
     instr!("STR_IND_HL_A_SUB", CPU::str_ind_hl_a_sub, 2),
     instr!("INC_SP", CPU::inc_sp, 2),
+    instr!("INC_IND_HL", CPU::inc_ind_hl, 3),
+    instr!("DEC_IND_HL", CPU::dec_ind_hl, 3),
+    instr!("STR_IMM_IND_HL", CPU::str_imm_ind_hl, 3),
+    instr!("SET_CARRY_FLAG", CPU::set_carry_flag, 1),
+    instr!("JUMP_SIGNED_CARRY_FLAG_ON", CPU::jump_signed_carry_flag_on),
+    instr!("ADD_HL_SP", CPU::nop, 2), // TODO: Implement
+    instr!("LD_IND_HL_A_SUB", CPU::ld_ind_hl_a_sub, 2),
+    instr!("DEC_SP", CPU::dec_sp, 2),
+    instr!("INC_A", CPU::inc_a, 1),
+    instr!("DEC_A", CPU::dec_a, 1),
+    instr!("LD_IMM_A", CPU::ld_imm_a, 2),
+    instr!("CCF", CPU::flip_carry_flag, 1),
 ];

@@ -3,6 +3,23 @@ use super::CPU;
 impl CPU {
     pub(super) fn flip_register_a(&mut self) {
         self.registers.a = !self.registers.a;
+
+        self.registers.f.half_carry = true;
+        self.registers.f.sub = true;
+    }
+
+    pub(super) fn flip_carry_flag(&mut self) {
+        self.registers.f.carry = !self.registers.f.carry;
+
+        self.registers.f.half_carry = false;
+        self.registers.f.sub = false;
+    }
+
+    pub(super) fn set_carry_flag(&mut self) {
+        self.registers.f.carry = true;
+
+        self.registers.f.half_carry = false;
+        self.registers.f.sub = false;
     }
 
     pub(super) fn rotate_left_a(&mut self) {
