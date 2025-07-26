@@ -87,6 +87,81 @@ macro_rules! str_ind {
     };
 }
 
+macro_rules! __generate_register_contents {
+    ($left:ident, $right:ident) => {
+        paste! {
+            pub(super) fn [<ld_ $left _ $right>](&mut self) {
+                self.registers.$left = self.registers.$right;
+            }
+            pub(super) fn [<ld_ $right _ $left>](&mut self) {
+                self.registers.$right = self.registers.$left;
+            }
+        }
+    };
+}
+// -------- outer recursion: pick a HEAD and pass it + REST -----
+macro_rules! _ld_pairs_outer {
+    // ≥2 idents left
+    ($head:ident, $($tail:ident),+ $(,)?) => {
+        _ld_pairs_inner! { $head; $($tail),+ }   // pair HEAD with everyone in TAIL
+        _ld_pairs_outer! { $($tail),+ }          // recurse on the TAIL
+    };
+    // 1‑ident base case – nothing left to pair
+    ($single:ident $(,)?) => {};
+}
+
+// -------- inner recursion: pair one HEAD with each in REST ----
+macro_rules! _ld_pairs_inner {
+    // still more partners to pair with HEAD
+    ($head:ident; $next:ident, $($rest:ident),* $(,)?) => {
+        __generate_register_contents!($head, $next);
+        _ld_pairs_inner! { $head; $($rest),* }
+    };
+    // last partner for this HEAD
+    ($head:ident; $last:ident $(,)?) => {
+        __generate_register_contents!($head, $last);
+    };
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Public macro you call: expands on *all* registers given.
+//    ld_pairs!(a, b, c)  →  AB + AC + BC (each direction)
+// ─────────────────────────────────────────────────────────────
+macro_rules! ld_register_contents {
+    ($($regs:ident),+ $(,)?) => {
+        _ld_pairs_outer! { $($regs),+ }
+    };
+}
+
+macro_rules! ld_indirect_contents {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<ld_ind_hl_ $reg>](&mut self) {
+                let addr = self.registers.hl();
+    
+                let value = self.read(addr);
+    
+                self.registers.$reg = value
+            }
+        }
+    };
+}
+
+macro_rules! str_indirect_contents {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<str_ind_hl_ $reg>](&mut self) {
+                let addr = self.registers.hl();
+    
+                let value = self.registers.$reg;
+    
+                self.write(addr, value)
+            }
+        }
+    };
+    () => {};
+}
+
 impl CPU {
     // Load immediate value to 16 bit register pairs
     fn ld_imm_16_bit(&mut self, set_fn: fn(&mut Registers, u16)) {
@@ -132,6 +207,27 @@ impl CPU {
     ld_ind!(hl, a, "sub", |cpu: &mut CPU| {
         cpu.decrement_hl();
     });
+
+    // Load from register
+    ld_register_contents!(a, b, c, d, e, h, l);
+
+    // Load from indirect address in HL to register
+    ld_indirect_contents!(a);
+    ld_indirect_contents!(b);
+    ld_indirect_contents!(c);
+    ld_indirect_contents!(d);
+    ld_indirect_contents!(e);
+    ld_indirect_contents!(h);
+    ld_indirect_contents!(l);
+
+    // Store from register to indirect address in HL
+    str_indirect_contents!(a);
+    str_indirect_contents!(b);
+    str_indirect_contents!(c);
+    str_indirect_contents!(d);
+    str_indirect_contents!(e);
+    str_indirect_contents!(h);
+    str_indirect_contents!(l);
 
     // Store register in address provided by indirect register memory
     str_ind!(bc, a);
