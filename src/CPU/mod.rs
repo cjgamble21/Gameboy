@@ -11,7 +11,7 @@ use registers::Registers;
 use crate::Memory;
 use instructions::*;
 
-const BUS_SIZE: usize = size_of::<u16>();
+const BUS_SIZE: usize = std::u16::MAX as usize;
 
 /* 
     Future consideration for the CPU struct:
