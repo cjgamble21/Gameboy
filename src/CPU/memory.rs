@@ -159,7 +159,6 @@ macro_rules! str_indirect_contents {
             }
         }
     };
-    () => {};
 }
 
 impl CPU {

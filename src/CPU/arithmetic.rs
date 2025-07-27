@@ -54,6 +54,26 @@ macro_rules! dec_16_bit {
     };
 }
 
+macro_rules! add_register {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<add_a_ $reg>](&mut self) {
+                self.add_register(self.registers.$reg, false)
+            }
+        }
+    };
+}
+
+macro_rules! add_register_with_carry {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<add_a_ $reg _with_carry>](&mut self) {
+                self.add_register(self.registers.$reg, true)
+            }
+        }
+    };
+}
+
 impl CPU {
     pub(super) fn binary_coded_decimal(&mut self) {
         let sub_flag_set = self.registers.f.sub;
@@ -156,6 +176,50 @@ impl CPU {
 
         self.write(addr, new_value);
     }
+
+    // Addition operations
+    pub(super) fn add_register(&mut self, register: u8, with_carry: bool) {
+        let accumulator = self.registers.a;
+
+        let to_add = register + (if self.registers.f.carry { 1 } else { 0 });
+
+        self.registers.f.half_carry = half_carry_occurred_8(accumulator, to_add);
+        self.registers.f.carry = carry_occurred_8(accumulator, to_add);
+        self.set_sub_flag(false);
+
+        self.registers.a += to_add;
+        self.set_zero_flag(accumulator);
+    }
+
+    pub(super) fn add_ind_hl_a(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.add_register(value, false);
+    }
+
+    pub(super) fn add_ind_hl_a_with_carry(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.add_register(value, true);
+    }
+
+    add_register!(b);
+    add_register!(c);
+    add_register!(d);
+    add_register!(e);
+    add_register!(h);
+    add_register!(l);
+
+    add_register_with_carry!(b);
+    add_register_with_carry!(c);
+    add_register_with_carry!(d);
+    add_register_with_carry!(e);
+    add_register_with_carry!(h);
+    add_register_with_carry!(l);
 
     pub(super) fn add_hl_bc(&mut self) {
         let half_carry = half_carry_occurred_16(self.registers.bc(), self.registers.hl());
