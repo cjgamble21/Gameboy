@@ -1,6 +1,6 @@
 use super::CPU;
 
-type CPUCycles = u32;
+type CPUCycles = u32; // Specifically M-cycle representation, not T-cycle
 
 type InstructionFn = fn(&mut CPU) -> CPUCycles;
 
@@ -183,4 +183,20 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("ADD_A_L_WITH_CARRY", CPU::add_a_l_with_carry, 1),
     instr!("ADD_IND_HL_A_WITH_CARRY", CPU::add_ind_hl_a_with_carry, 2),
     instr!("ADD_A_A_WITH_CARRY", CPU::nop, 1),
+    instr!("SUB_A_B", CPU::subtract_a_b, 1),
+    instr!("SUB_A_C", CPU::subtract_a_c, 1),
+    instr!("SUB_A_D", CPU::subtract_a_d, 1),
+    instr!("SUB_A_E", CPU::subtract_a_e, 1),
+    instr!("SUB_A_H", CPU::subtract_a_h, 1),
+    instr!("SUB_A_L", CPU::subtract_a_l, 1),
+    instr!("SUB_IND_HL_A", CPU::subtract_ind_hl_a, 2),
+    instr!("SUB_A_A", CPU::nop, 1),
+    instr!("SUB_A_B_WITH_CARRY", CPU::subtract_a_b_with_carry, 1),
+    instr!("SUB_A_C_WITH_CARRY", CPU::subtract_a_c_with_carry, 1),
+    instr!("SUB_A_D_WITH_CARRY", CPU::subtract_a_d_with_carry, 1),
+    instr!("SUB_A_E_WITH_CARRY", CPU::subtract_a_e_with_carry, 1),
+    instr!("SUB_A_H_WITH_CARRY", CPU::subtract_a_h_with_carry, 1),
+    instr!("SUB_A_L_WITH_CARRY", CPU::subtract_a_l_with_carry, 1),
+    instr!("SUB_IND_HL_A_WITH_CARRY", CPU::subtract_ind_hl_a_with_carry, 2),
+    instr!("SUB_A_A_WITH_CARRY", CPU::nop, 1),
 ];

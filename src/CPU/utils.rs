@@ -13,3 +13,19 @@ pub(super) fn half_carry_occurred_16(a: u16, b: u16) -> bool {
 pub(super) fn carry_occurred_16(a: u16, b: u16) -> bool {
     (a as u32) + (b as u32) > 0xffff
 }
+
+pub(super) fn carry_occurred_8_sub(a: u8, b: u8) -> bool {
+    a < b
+}
+
+pub(super) fn half_carry_occurred_8_sub(a: u8, b: u8) -> bool {
+    a & 0xf < b & 0xf
+}
+
+pub(super) fn carry_occurred_16_sub(a: u16, b: u16) -> bool {
+    a < b
+}
+
+pub(super) fn half_carry_occurred_16_sub(a: u16, b: u16) -> bool {
+    a & 0xfff < b & 0xfff
+}

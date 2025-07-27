@@ -74,6 +74,26 @@ macro_rules! add_register_with_carry {
     };
 }
 
+macro_rules! subtract_register {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<subtract_a_ $reg>](&mut self) {
+                self.subtract_register(self.registers.$reg, false)
+            }
+        }
+    };
+}
+
+macro_rules! subtract_register_with_carry {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<subtract_a_ $reg _with_carry>](&mut self) {
+                self.subtract_register(self.registers.$reg, true)
+            }
+        }
+    };
+}
+
 impl CPU {
     pub(super) fn binary_coded_decimal(&mut self) {
         let sub_flag_set = self.registers.f.sub;
@@ -181,7 +201,7 @@ impl CPU {
     pub(super) fn add_register(&mut self, register: u8, with_carry: bool) {
         let accumulator = self.registers.a;
 
-        let to_add = register + (if self.registers.f.carry { 1 } else { 0 });
+        let to_add = register + (if self.registers.f.carry && with_carry { 1 } else { 0 });
 
         self.registers.f.half_carry = half_carry_occurred_8(accumulator, to_add);
         self.registers.f.carry = carry_occurred_8(accumulator, to_add);
@@ -231,4 +251,48 @@ impl CPU {
         self.registers.f.half_carry = half_carry;
         self.registers.f.sub = false;
     }
+
+    // Subtraction operations
+    pub(super) fn subtract_register(&mut self, register: u8, with_carry: bool) {
+        let accumulator = self.registers.a;
+
+        let to_sub = register - (if self.registers.f.carry && with_carry { 1 } else { 0 });
+
+        self.registers.f.half_carry = half_carry_occurred_8_sub(accumulator, to_sub);
+        self.registers.f.carry = carry_occurred_8_sub(accumulator, to_sub);
+        self.set_sub_flag(true);
+
+        self.registers.a -= to_sub;
+        self.set_zero_flag(accumulator);
+    }
+
+    pub(super) fn subtract_ind_hl_a(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.subtract_register(value, false);
+    }
+
+    pub(super) fn subtract_ind_hl_a_with_carry(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.subtract_register(value, true);
+    }
+
+    subtract_register!(b);
+    subtract_register!(c);
+    subtract_register!(d);
+    subtract_register!(e);
+    subtract_register!(h);
+    subtract_register!(l);
+
+    subtract_register_with_carry!(b);
+    subtract_register_with_carry!(c);
+    subtract_register_with_carry!(d);
+    subtract_register_with_carry!(e);
+    subtract_register_with_carry!(h);
+    subtract_register_with_carry!(l);
 }
