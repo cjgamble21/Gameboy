@@ -1,4 +1,21 @@
 use super::CPU;
+use paste::paste;
+use crate::Memory;
+
+macro_rules! register_and {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<and_a_ $reg>](&mut self) {
+                self.registers.a &= self.registers.$reg;
+
+                self.registers.f.zero = self.registers.a == 0;
+                self.registers.f.sub = false;
+                self.registers.f.half_carry = true;
+                self.registers.f.carry = false;
+            }
+        }
+    };
+}
 
 impl CPU {
     pub(super) fn flip_register_a(&mut self) {
@@ -66,5 +83,26 @@ impl CPU {
         self.registers.f.zero = false;
 
         self.registers.a = (old_carry << 7) | (self.registers.a >> 1);
+    }
+
+    // Register AND operations
+    register_and!(b);
+    register_and!(c);
+    register_and!(d);
+    register_and!(e);
+    register_and!(h);
+    register_and!(l);
+
+    pub(super) fn and_ind_hl_a(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.registers.a &= value;
+
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.sub = false;
+        self.registers.f.half_carry = true;
+        self.registers.f.carry = false;
     }
 }

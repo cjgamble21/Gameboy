@@ -199,4 +199,12 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("SUB_A_L_WITH_CARRY", CPU::subtract_a_l_with_carry, 1),
     instr!("SUB_IND_HL_A_WITH_CARRY", CPU::subtract_ind_hl_a_with_carry, 2),
     instr!("SUB_A_A_WITH_CARRY", CPU::nop, 1),
+    instr!("AND_A_B", CPU::and_a_b, 1),
+    instr!("AND_A_C", CPU::and_a_c, 1),
+    instr!("AND_A_D", CPU::and_a_d, 1),
+    instr!("AND_A_E", CPU::and_a_e, 1),
+    instr!("AND_A_H", CPU::and_a_h, 1),
+    instr!("AND_A_L", CPU::and_a_l, 1),
+    instr!("AND_IND_HL_A", CPU::and_ind_hl_a, 2),
+    instr!("AND_A_A", CPU::nop, 1),
 ];
