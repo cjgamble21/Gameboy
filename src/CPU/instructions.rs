@@ -207,4 +207,12 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("AND_A_L", CPU::and_a_l, 1),
     instr!("AND_IND_HL_A", CPU::and_ind_hl_a, 2),
     instr!("AND_A_A", CPU::nop, 1),
+    instr!("XOR_A_B", CPU::xor_a_b, 1),
+    instr!("XOR_A_C", CPU::xor_a_c, 1),
+    instr!("XOR_A_D", CPU::xor_a_d, 1),
+    instr!("XOR_A_E", CPU::xor_a_e, 1),
+    instr!("XOR_A_H", CPU::xor_a_h, 1),
+    instr!("XOR_A_L", CPU::xor_a_l, 1),
+    instr!("XOR_IND_HL_A", CPU::xor_ind_hl_a, 2),
+    instr!("XOR_A_A", CPU::nop, 1), // Should this be a nop?
 ];

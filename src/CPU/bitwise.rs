@@ -17,6 +17,21 @@ macro_rules! register_and {
     };
 }
 
+macro_rules! register_xor {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<xor_a_ $reg>](&mut self) {
+                self.registers.a ^= self.registers.$reg;
+
+                self.registers.f.zero = self.registers.a == 0;
+                self.registers.f.sub = false;
+                self.registers.f.half_carry = false;
+                self.registers.f.carry = false;
+            }
+        }
+    };
+}
+
 impl CPU {
     pub(super) fn flip_register_a(&mut self) {
         self.registers.a = !self.registers.a;
@@ -103,6 +118,27 @@ impl CPU {
         self.registers.f.zero = self.registers.a == 0;
         self.registers.f.sub = false;
         self.registers.f.half_carry = true;
+        self.registers.f.carry = false;
+    }
+
+    // Register XOR operations
+    register_xor!(b);
+    register_xor!(c);
+    register_xor!(d);
+    register_xor!(e);
+    register_xor!(h);
+    register_xor!(l);
+
+    pub(super) fn xor_ind_hl_a(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.registers.a ^= value;
+
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.sub = false;
+        self.registers.f.half_carry = false;
         self.registers.f.carry = false;
     }
 }
