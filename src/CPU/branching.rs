@@ -116,14 +116,23 @@ impl CPU {
         if !self.registers.f.zero {
             num_cycles
         } else {
-            let addr = self
-                .stack
-                .pop()
-                .expect("Attempted to pop an empty program stack");
+            let low_byte = self.read(self.registers.sp);
 
-            let value = self.read(addr);
+            self.registers.sp += 1;
 
-            5
+            let mut new_pc = set_low_byte(self.registers.pc, low_byte);
+
+            let high_byte = self.read(self.registers.sp);
+
+            self.registers.sp += 1;
+
+            new_pc = set_high_byte(new_pc, high_byte);
+
+            self.registers.pc = new_pc;
+
+            num_cycles = 5;
+
+            num_cycles
         }
     }
 }

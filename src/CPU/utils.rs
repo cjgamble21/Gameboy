@@ -42,6 +42,10 @@ pub(super) fn set_high_byte(to_set: u16, value: u8) -> u16 {
     (to_set & 0x00FF) | ((value as u16) << 8)
 }
 
+pub(super) fn set_low_byte(to_set: u16, value: u8) -> u16 {
+    (to_set & 0xff00) | (value as u16)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -65,5 +69,12 @@ mod tests {
         assert_eq!(set_high_byte(0xABCD, 0x67), 0x67CD);
         assert_eq!(set_high_byte(0x7934, 0x9D), 0x9D34);
         assert_ne!(set_high_byte(0x8723, 0xFF), 0x8723);
+    }
+
+    #[test]
+    fn test_set_low_byte() {
+        assert_eq!(set_low_byte(0x5432, 0x98), 0x5498);
+        assert_eq!(set_low_byte(0xFF83, 0xAB), 0xFFAB);
+        assert_ne!(set_low_byte(0xFF87, 0x54), 0xFF87);
     }
 }
