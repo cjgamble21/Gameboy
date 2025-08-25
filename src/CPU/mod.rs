@@ -12,7 +12,7 @@ use instructions::*;
 use registers::Registers;
 
 const BUS_SIZE: usize = std::u16::MAX as usize;
-const STACK_SIZE: usize = 1000
+const STACK_SIZE: usize = 1000;
 
 /*
     Future consideration for the CPU struct:

@@ -57,6 +57,13 @@ mod tests {
     fn test_get_low_byte() {
         assert_eq!(get_low_byte(0xABCD), 0xCD);
         assert_eq!(get_low_byte(0x1234), 0x34);
-        assert_ne!(get_high_byte(0x1234), 0x12);
+        assert_ne!(get_low_byte(0x1234), 0x12);
+    }
+
+    #[test]
+    fn test_set_high_byte() {
+        assert_eq!(set_high_byte(0xABCD, 0x67), 0x67CD);
+        assert_eq!(set_high_byte(0x7934, 0x9D), 0x9D34);
+        assert_ne!(set_high_byte(0x8723, 0xFF), 0x8723);
     }
 }
