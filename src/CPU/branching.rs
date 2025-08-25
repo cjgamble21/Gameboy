@@ -1,3 +1,5 @@
+use std::num;
+
 use super::CPU;
 use super::utils::*;
 use crate::Memory;
@@ -106,5 +108,22 @@ impl CPU {
         self.registers.f.sub = true;
         self.registers.f.half_carry = half_carry_occurred_8_sub(a, to_cmp);
         self.registers.f.carry = carry_occurred_8_sub(a, to_cmp);
+    }
+
+    // Return instructions
+    pub(super) fn ret_nz(&mut self) -> u32 {
+        let mut num_cycles: u32 = 2;
+        if !self.registers.f.zero {
+            num_cycles
+        } else {
+            let addr = self
+                .stack
+                .pop()
+                .expect("Attempted to pop an empty program stack");
+
+            let value = self.read(addr);
+
+            5
+        }
     }
 }

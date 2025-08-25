@@ -29,3 +29,34 @@ pub(super) fn carry_occurred_16_sub(a: u16, b: u16) -> bool {
 pub(super) fn half_carry_occurred_16_sub(a: u16, b: u16) -> bool {
     a & 0xfff < b & 0xfff
 }
+
+pub(super) fn get_high_byte(value: u16) -> u8 {
+    (value >> 8) as u8
+}
+
+pub(super) fn get_low_byte(value: u16) -> u8 {
+    (value & 0xff) as u8
+}
+
+pub(super) fn set_high_byte(to_set: u16, value: u8) -> u16 {
+    (to_set & 0x00FF) | ((value as u16) << 8)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_high_byte() {
+        assert_eq!(get_high_byte(0xABCD), 0xAB);
+        assert_eq!(get_high_byte(0x1234), 0x12);
+        assert_ne!(get_high_byte(0x3482), 0x82);
+    }
+
+    #[test]
+    fn test_get_low_byte() {
+        assert_eq!(get_low_byte(0xABCD), 0xCD);
+        assert_eq!(get_low_byte(0x1234), 0x34);
+        assert_ne!(get_high_byte(0x1234), 0x12);
+    }
+}

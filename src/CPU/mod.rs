@@ -12,6 +12,7 @@ use instructions::*;
 use registers::Registers;
 
 const BUS_SIZE: usize = std::u16::MAX as usize;
+const STACK_SIZE: usize = 1000
 
 /*
     Future consideration for the CPU struct:
@@ -23,6 +24,7 @@ pub struct CPU {
     memory: Vec<u8>,
     registers: Registers,
     cycles: u32,
+    stack: Vec<u16>,
 }
 
 impl Memory for CPU {
@@ -41,6 +43,7 @@ impl CPU {
             memory: Vec::with_capacity(BUS_SIZE),
             registers: Registers::new(),
             cycles: 0,
+            stack: Vec::with_capacity(STACK_SIZE),
         }
     }
 
