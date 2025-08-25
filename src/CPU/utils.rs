@@ -46,6 +46,10 @@ pub(super) fn set_low_byte(to_set: u16, value: u8) -> u16 {
     (to_set & 0xff00) | (value as u16)
 }
 
+pub(super) fn build_16_bit(high: u8, low: u8) -> u16 {
+    ((high as u16) << 8) | (low as u16)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

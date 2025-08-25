@@ -25,6 +25,10 @@ impl CPU {
         self.registers.pc = ((self.registers.pc as i16) + (offset as i16)) as u16;
     }
 
+    pub(super) fn jump_to_address(&mut self, addr: u16) {
+        self.registers.pc = addr;
+    }
+
     pub(super) fn jump_signed_default(&mut self) {
         let addr = self.read_from_pc() as i8;
         self.jump(addr);
@@ -90,6 +94,39 @@ impl CPU {
         self.jump_signed_carry_flag(false)
     }
 
+    pub(super) fn jump_16_bit(&mut self) {
+        let low_byte = self.read_from_pc();
+        let high_byte = self.read_from_pc();
+
+        self.registers.pc = build_16_bit(high_byte, low_byte);
+    }
+
+    pub(super) fn jump_nz(&mut self) -> u32 {
+        let mut num_cycles = 3;
+        if self.registers.f.zero {
+            self.registers.pc += 2;
+            num_cycles
+        } else {
+            self.jump_16_bit();
+
+            num_cycles = 4;
+            num_cycles
+        }
+    }
+
+    pub(super) fn jump_z(&mut self) -> u32 {
+        let mut num_cycles = 3;
+        if !self.registers.f.zero {
+            self.registers.pc += 2;
+            num_cycles
+        } else {
+            self.jump_16_bit();
+
+            num_cycles = 4;
+            num_cycles
+        }
+    }
+
     // Comparison instructions
     register_cmp!(b);
     register_cmp!(c);
@@ -97,6 +134,7 @@ impl CPU {
     register_cmp!(e);
     register_cmp!(h);
     register_cmp!(l);
+
     pub(super) fn cmp_ind_hl_a(&mut self) {
         let a = self.registers.a;
         let addr = self.registers.hl();
@@ -107,35 +145,5 @@ impl CPU {
         self.registers.f.sub = true;
         self.registers.f.half_carry = half_carry_occurred_8_sub(a, to_cmp);
         self.registers.f.carry = carry_occurred_8_sub(a, to_cmp);
-    }
-
-    // Return instructions
-    fn instr_return(&mut self) {
-        let low_byte = self.read(self.registers.sp);
-
-        self.registers.sp += 1;
-
-        let mut new_pc = set_low_byte(self.registers.pc, low_byte);
-
-        let high_byte = self.read(self.registers.sp);
-
-        self.registers.sp += 1;
-
-        new_pc = set_high_byte(new_pc, high_byte);
-
-        self.registers.pc = new_pc;
-    }
-
-    pub(super) fn ret_nz(&mut self) -> u32 {
-        let mut num_cycles: u32 = 2;
-        if self.registers.f.zero {
-            num_cycles
-        } else {
-            self.instr_return();
-
-            num_cycles = 5;
-
-            num_cycles
-        }
     }
 }

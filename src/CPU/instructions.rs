@@ -241,4 +241,18 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("CMP_A_A", CPU::nop, 1), // not a nop
     instr!("RET_NZ", CPU::ret_nz),
     instr!("POP_BC", CPU::pop_bc, 3),
+    instr!("JMP_NZ", CPU::jump_nz),
+    instr!("JMP_IMM", CPU::jump_16_bit, 4),
+    instr!("CALL_NZ", CPU::call_nz),
+    instr!("PUSH_BC", CPU::push_bc, 4),
+    instr!("ADD_IMM_A", CPU::add_imm_a, 2),
+    instr!("RST_0", CPU::reset_00, 4),
+    instr!("RET_Z", CPU::ret_z),
+    instr!("RET", CPU::instr_return, 4),
+    instr!("JMP_Z", CPU::jump_z),
+    instr!("PREFIX", CPU::nop, 1), // TODO: Implement CB prefix instructions
+    instr!("CALL_Z", CPU::call_z),
+    instr!("CALL", CPU::call, 6),
+    instr!("ADD_IMM_A_WITH_CARRY", CPU::add_imm_a_with_carry, 2),
+    instr!("RST_1", CPU::reset_08, 4),
 ];
