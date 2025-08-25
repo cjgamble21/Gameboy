@@ -1,5 +1,3 @@
-use std::num;
-
 use super::CPU;
 use super::utils::*;
 use crate::Memory;
@@ -22,6 +20,7 @@ macro_rules! register_cmp {
 }
 
 impl CPU {
+    // Jump instructions
     fn jump(&mut self, offset: i8) {
         self.registers.pc = ((self.registers.pc as i16) + (offset as i16)) as u16;
     }
@@ -111,24 +110,28 @@ impl CPU {
     }
 
     // Return instructions
+    fn instr_return(&mut self) {
+        let low_byte = self.read(self.registers.sp);
+
+        self.registers.sp += 1;
+
+        let mut new_pc = set_low_byte(self.registers.pc, low_byte);
+
+        let high_byte = self.read(self.registers.sp);
+
+        self.registers.sp += 1;
+
+        new_pc = set_high_byte(new_pc, high_byte);
+
+        self.registers.pc = new_pc;
+    }
+
     pub(super) fn ret_nz(&mut self) -> u32 {
         let mut num_cycles: u32 = 2;
-        if !self.registers.f.zero {
+        if self.registers.f.zero {
             num_cycles
         } else {
-            let low_byte = self.read(self.registers.sp);
-
-            self.registers.sp += 1;
-
-            let mut new_pc = set_low_byte(self.registers.pc, low_byte);
-
-            let high_byte = self.read(self.registers.sp);
-
-            self.registers.sp += 1;
-
-            new_pc = set_high_byte(new_pc, high_byte);
-
-            self.registers.pc = new_pc;
+            self.instr_return();
 
             num_cycles = 5;
 

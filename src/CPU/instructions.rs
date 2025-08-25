@@ -240,4 +240,5 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("CMP_IND_HL_A", CPU::cmp_ind_hl_a, 2),
     instr!("CMP_A_A", CPU::nop, 1), // not a nop
     instr!("RET_NZ", CPU::ret_nz),
+    instr!("POP_BC", CPU::pop_bc, 3),
 ];

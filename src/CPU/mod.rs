@@ -5,6 +5,7 @@ mod control;
 mod instructions;
 mod memory;
 mod registers;
+mod stack;
 mod utils;
 
 use crate::Memory;

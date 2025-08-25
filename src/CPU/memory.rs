@@ -1,7 +1,7 @@
 use super::CPU;
+use super::registers::Registers;
 use crate::Memory;
 use paste::paste;
-use super::registers::Registers;
 
 /*
     ld -> Load memory
@@ -138,9 +138,9 @@ macro_rules! ld_indirect_contents {
         paste! {
             pub(super) fn [<ld_ind_hl_ $reg>](&mut self) {
                 let addr = self.registers.hl();
-    
+
                 let value = self.read(addr);
-    
+
                 self.registers.$reg = value
             }
         }
@@ -152,9 +152,9 @@ macro_rules! str_indirect_contents {
         paste! {
             pub(super) fn [<str_ind_hl_ $reg>](&mut self) {
                 let addr = self.registers.hl();
-    
+
                 let value = self.registers.$reg;
-    
+
                 self.write(addr, value)
             }
         }
