@@ -1,19 +1,19 @@
-mod memory;
 mod arithmetic;
 mod bitwise;
-mod control;
 mod branching;
+mod control;
 mod instructions;
+mod memory;
 mod registers;
 mod utils;
 
-use registers::Registers;
 use crate::Memory;
 use instructions::*;
+use registers::Registers;
 
 const BUS_SIZE: usize = std::u16::MAX as usize;
 
-/* 
+/*
     Future consideration for the CPU struct:
     When we get to interrupts / CPU state , can we make use of the type state pattern?
     Might not be applicable, but I can see it being useful when dealing with halted states,

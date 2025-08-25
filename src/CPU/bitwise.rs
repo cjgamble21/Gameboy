@@ -1,6 +1,6 @@
 use super::CPU;
-use paste::paste;
 use crate::Memory;
+use paste::paste;
 
 macro_rules! register_and {
     ($reg:ident) => {
@@ -22,6 +22,21 @@ macro_rules! register_xor {
         paste! {
             pub(super) fn [<xor_a_ $reg>](&mut self) {
                 self.registers.a ^= self.registers.$reg;
+
+                self.registers.f.zero = self.registers.a == 0;
+                self.registers.f.sub = false;
+                self.registers.f.half_carry = false;
+                self.registers.f.carry = false;
+            }
+        }
+    };
+}
+
+macro_rules! register_or {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<or_a_ $reg>](&mut self) {
+                self.registers.a |= self.registers.$reg;
 
                 self.registers.f.zero = self.registers.a == 0;
                 self.registers.f.sub = false;
@@ -130,6 +145,27 @@ impl CPU {
     register_xor!(l);
 
     pub(super) fn xor_ind_hl_a(&mut self) {
+        let addr = self.registers.hl();
+
+        let value = self.read(addr);
+
+        self.registers.a ^= value;
+
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.sub = false;
+        self.registers.f.half_carry = false;
+        self.registers.f.carry = false;
+    }
+
+    // Register OR operations
+    register_or!(b);
+    register_or!(c);
+    register_or!(d);
+    register_or!(e);
+    register_or!(h);
+    register_or!(l);
+
+    pub(super) fn or_ind_hl_a(&mut self) {
         let addr = self.registers.hl();
 
         let value = self.read(addr);

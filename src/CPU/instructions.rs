@@ -11,10 +11,7 @@ pub struct Instruction {
 
 impl Instruction {
     pub const fn new(name: &'static str, function: InstructionFn) -> Self {
-        Instruction {
-            name,
-            function,
-        }
+        Instruction { name, function }
     }
 }
 
@@ -33,7 +30,7 @@ macro_rules! instr {
 }
 
 /*
-    This can just be a normal const array in the future - 
+    This can just be a normal const array in the future -
     I declared it static to avoid the language server yelling at me as I add instructions
 */
 // Index of each instruction corresponds to its relevant opcode
@@ -70,7 +67,11 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("INC_E", CPU::inc_e, 1),
     instr!("DEC_E", CPU::dec_e, 1),
     instr!("LD_IMM_E", CPU::ld_imm_e, 2),
-    instr!("ROTATE_RIGHT_A_WITH_CARRY", CPU::rotate_right_a_with_carry, 1),
+    instr!(
+        "ROTATE_RIGHT_A_WITH_CARRY",
+        CPU::rotate_right_a_with_carry,
+        1
+    ),
     instr!("JUMP_SIGNED_ZERO_FLAG_OFF", CPU::jump_signed_zero_flag_off), // Dynamic cycle count
     instr!("LD_IMM_HL", CPU::ld_imm_hl, 3),
     instr!("STR_IND_HL_A_ADD", CPU::str_ind_hl_a_add, 2),
@@ -80,14 +81,17 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("LD_IMM_H", CPU::ld_imm_h, 2),
     instr!("DAA", CPU::binary_coded_decimal, 1),
     instr!("JUMP_SIGNED_ZERO_FLAG_ON", CPU::jump_signed_zero_flag_on), // Dynamic cycle count
-    instr!("ADD_HL_HL", CPU::nop, 2), // TODO: Implement
+    instr!("ADD_HL_HL", CPU::nop, 2),                                  // TODO: Implement
     instr!("LD_IND_HL_A_ADD", CPU::ld_ind_hl_a_add, 2),
     instr!("DEC_HL", CPU::dec_hl, 2),
     instr!("INC_L", CPU::inc_l, 1),
     instr!("DEC_L", CPU::dec_l, 1),
     instr!("LD_IMM_E", CPU::ld_imm_l, 2),
     instr!("CPL", CPU::flip_register_a, 1),
-    instr!("JUMP_SIGNED_CARRY_FLAG_OFF", CPU::jump_signed_carry_flag_off), // Dynamic cycle count
+    instr!(
+        "JUMP_SIGNED_CARRY_FLAG_OFF",
+        CPU::jump_signed_carry_flag_off
+    ), // Dynamic cycle count
     instr!("LD_IMM_SP", CPU::ld_imm_sp, 3),
     instr!("STR_IND_HL_A_SUB", CPU::str_ind_hl_a_sub, 2),
     instr!("INC_SP", CPU::inc_sp, 2),
@@ -197,7 +201,11 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("SUB_A_E_WITH_CARRY", CPU::subtract_a_e_with_carry, 1),
     instr!("SUB_A_H_WITH_CARRY", CPU::subtract_a_h_with_carry, 1),
     instr!("SUB_A_L_WITH_CARRY", CPU::subtract_a_l_with_carry, 1),
-    instr!("SUB_IND_HL_A_WITH_CARRY", CPU::subtract_ind_hl_a_with_carry, 2),
+    instr!(
+        "SUB_IND_HL_A_WITH_CARRY",
+        CPU::subtract_ind_hl_a_with_carry,
+        2
+    ),
     instr!("SUB_A_A_WITH_CARRY", CPU::nop, 1),
     instr!("AND_A_B", CPU::and_a_b, 1),
     instr!("AND_A_C", CPU::and_a_c, 1),
@@ -215,4 +223,20 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("XOR_A_L", CPU::xor_a_l, 1),
     instr!("XOR_IND_HL_A", CPU::xor_ind_hl_a, 2),
     instr!("XOR_A_A", CPU::nop, 1), // Should this be a nop?
+    instr!("OR_A_B", CPU::or_a_b, 1),
+    instr!("OR_A_C", CPU::or_a_c, 1),
+    instr!("OR_A_D", CPU::or_a_d, 1),
+    instr!("OR_A_E", CPU::or_a_e, 1),
+    instr!("OR_A_H", CPU::or_a_h, 1),
+    instr!("OR_A_L", CPU::or_a_l, 1),
+    instr!("OR_IND_HL_A", CPU::or_ind_hl_a, 2),
+    instr!("OR_A_A", CPU::nop, 1), // Should this be a nop?
+    instr!("CMP_A_B", CPU::cmp_a_b, 1),
+    instr!("CMP_A_C", CPU::cmp_a_c, 1),
+    instr!("CMP_A_D", CPU::cmp_a_d, 1),
+    instr!("CMP_A_E", CPU::cmp_a_e, 1),
+    instr!("CMP_A_H", CPU::cmp_a_h, 1),
+    instr!("CMP_A_L", CPU::cmp_a_l, 1),
+    instr!("CMP_IND_HL_A", CPU::cmp_ind_hl_a, 2),
+    instr!("CMP_A_A", CPU::nop, 1), // not a nop
 ];

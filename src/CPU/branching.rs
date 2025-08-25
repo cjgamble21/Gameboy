@@ -1,4 +1,23 @@
 use super::CPU;
+use super::utils::*;
+use crate::Memory;
+use paste::paste;
+
+macro_rules! register_cmp {
+    ($reg:ident) => {
+        paste! {
+            pub(super) fn [<cmp_a_ $reg>](&mut self) {
+                let a = self.registers.a;
+                let to_cmp = self.registers.$reg;
+
+                self.registers.f.zero = a == to_cmp;
+                self.registers.f.sub = true;
+                self.registers.f.half_carry = half_carry_occurred_8_sub(a, to_cmp);
+                self.registers.f.carry = carry_occurred_8_sub(a, to_cmp);
+            }
+        }
+    };
+}
 
 impl CPU {
     fn jump(&mut self, offset: i8) {
@@ -68,5 +87,24 @@ impl CPU {
 
     pub(super) fn jump_signed_carry_flag_off(&mut self) -> u32 {
         self.jump_signed_carry_flag(false)
+    }
+
+    // Comparison instructions
+    register_cmp!(b);
+    register_cmp!(c);
+    register_cmp!(d);
+    register_cmp!(e);
+    register_cmp!(h);
+    register_cmp!(l);
+    pub(super) fn cmp_ind_hl_a(&mut self) {
+        let a = self.registers.a;
+        let addr = self.registers.hl();
+
+        let to_cmp = self.read(addr);
+
+        self.registers.f.zero = a == to_cmp;
+        self.registers.f.sub = true;
+        self.registers.f.half_carry = half_carry_occurred_8_sub(a, to_cmp);
+        self.registers.f.carry = carry_occurred_8_sub(a, to_cmp);
     }
 }
