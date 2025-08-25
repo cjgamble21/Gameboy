@@ -3,6 +3,7 @@ mod bitwise;
 mod branching;
 mod control;
 mod instructions;
+mod interrupts;
 mod memory;
 mod registers;
 mod stack;

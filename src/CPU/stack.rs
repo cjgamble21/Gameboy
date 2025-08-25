@@ -26,6 +26,14 @@ impl CPU {
         self.reset(0x08);
     }
 
+    pub(super) fn reset_10(&mut self) {
+        self.reset(0x10)
+    }
+
+    pub(super) fn reset_18(&mut self) {
+        self.reset(0x18)
+    }
+
     // Push instructions
     fn push(&mut self, value: u16) {
         self.registers.sp -= 1;
@@ -159,5 +167,10 @@ impl CPU {
 
     pub(super) fn ret_c(&mut self) -> u32 {
         self.return_with_condition(self.registers.f.carry)
+    }
+
+    pub(super) fn ret_enable_interrupts(&mut self) {
+        self.instr_return();
+        self.enable_interrupts();
     }
 }

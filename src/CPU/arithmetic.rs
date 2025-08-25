@@ -331,4 +331,30 @@ impl CPU {
     subtract_register_with_carry!(e);
     subtract_register_with_carry!(h);
     subtract_register_with_carry!(l);
+
+    fn _sub_imm_a(&mut self, with_carry: bool) {
+        let value = self.read_from_pc();
+
+        let half_carry = half_carry_occurred_8_sub(self.registers.a, value);
+        let carry = carry_occurred_8_sub(self.registers.a, value);
+
+        if with_carry {
+            self.registers.a -= value + if carry { 1 } else { 0 };
+        } else {
+            self.registers.a -= value;
+        }
+
+        self.registers.f.carry = carry;
+        self.registers.f.half_carry = half_carry;
+        self.registers.f.sub = true;
+        self.registers.f.zero = self.registers.a == 0;
+    }
+
+    pub(super) fn sub_imm_a(&mut self) {
+        self._sub_imm_a(false);
+    }
+
+    pub(super) fn sub_imm_a_with_carry(&mut self) {
+        self._sub_imm_a(true);
+    }
 }
