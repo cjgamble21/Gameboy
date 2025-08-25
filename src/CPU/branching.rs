@@ -130,6 +130,10 @@ impl CPU {
         self._jump(self.registers.f.carry)
     }
 
+    pub(super) fn jump_hl(&mut self) {
+        self.registers.pc = self.registers.hl();
+    }
+
     // Comparison instructions
     register_cmp!(b);
     register_cmp!(c);
@@ -143,6 +147,16 @@ impl CPU {
         let addr = self.registers.hl();
 
         let to_cmp = self.read(addr);
+
+        self.registers.f.zero = a == to_cmp;
+        self.registers.f.sub = true;
+        self.registers.f.half_carry = half_carry_occurred_8_sub(a, to_cmp);
+        self.registers.f.carry = carry_occurred_8_sub(a, to_cmp);
+    }
+
+    pub(super) fn cmp_imm_a(&mut self) {
+        let a = self.registers.a;
+        let to_cmp = self.read_from_pc();
 
         self.registers.f.zero = a == to_cmp;
         self.registers.f.sub = true;

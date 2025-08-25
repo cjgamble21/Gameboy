@@ -11,29 +11,6 @@ impl CPU {
         value
     }
 
-    // Reset instructions
-    fn reset(&mut self, target: u16) {
-        self.push(self.registers.pc);
-
-        self.jump_to_address(target);
-    }
-
-    pub(super) fn reset_00(&mut self) {
-        self.reset(0x00);
-    }
-
-    pub(super) fn reset_08(&mut self) {
-        self.reset(0x08);
-    }
-
-    pub(super) fn reset_10(&mut self) {
-        self.reset(0x10)
-    }
-
-    pub(super) fn reset_18(&mut self) {
-        self.reset(0x18)
-    }
-
     // Push instructions
     fn push(&mut self, value: u16) {
         self.registers.sp -= 1;
@@ -92,6 +69,7 @@ impl CPU {
         self.registers.set_af(new_af);
     }
 
+    // Call instructions
     pub(super) fn call(&mut self) {
         self.jump_16_bit();
 
@@ -172,5 +150,44 @@ impl CPU {
     pub(super) fn ret_enable_interrupts(&mut self) {
         self.instr_return();
         self.enable_interrupts();
+    }
+
+    // Reset instructions
+    fn reset(&mut self, target: u16) {
+        self.push(self.registers.pc);
+
+        self.jump_to_address(target);
+    }
+
+    pub(super) fn reset_00(&mut self) {
+        self.reset(0x00);
+    }
+
+    pub(super) fn reset_08(&mut self) {
+        self.reset(0x08);
+    }
+
+    pub(super) fn reset_10(&mut self) {
+        self.reset(0x10)
+    }
+
+    pub(super) fn reset_18(&mut self) {
+        self.reset(0x18)
+    }
+
+    pub(super) fn reset_20(&mut self) {
+        self.reset(0x20)
+    }
+
+    pub(super) fn reset_28(&mut self) {
+        self.reset(0x28)
+    }
+
+    pub(super) fn reset_30(&mut self) {
+        self.reset(0x30)
+    }
+
+    pub(super) fn reset_38(&mut self) {
+        self.reset(0x38)
     }
 }

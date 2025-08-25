@@ -1,5 +1,6 @@
 use super::CPU;
 use super::registers::Registers;
+use crate::CPU::utils::{build_16_bit, carry_occurred_16, half_carry_occurred_16};
 use crate::Memory;
 use paste::paste;
 
@@ -259,5 +260,64 @@ impl CPU {
 
         self.write(addr, low_byte_sp);
         self.write(addr + 1, high_byte_sp);
+    }
+
+    // 8 bit memory instructions
+    pub(super) fn str_ind_a_8_bit(&mut self) {
+        let low_byte = self.read_from_pc();
+        let addr = build_16_bit(0xff, low_byte);
+
+        self.write(addr, self.registers.a);
+    }
+
+    pub(super) fn ld_ind_a_8_bit(&mut self) {
+        let low_byte = self.read_from_pc();
+        let addr = build_16_bit(0xff, low_byte);
+
+        self.registers.a = self.read(addr);
+    }
+
+    pub(super) fn str_ind_a_c_8_bit(&mut self) {
+        let addr = build_16_bit(0xff, self.registers.c);
+        self.write(addr, self.registers.a)
+    }
+
+    pub(super) fn ld_ind_a_c_8_bit(&mut self) {
+        let addr = build_16_bit(0xff, self.registers.c);
+        self.registers.a = self.read(addr);
+    }
+
+    // 16 bit indirects on A register
+    pub(super) fn str_ind_a(&mut self) {
+        let low_byte = self.read_from_pc();
+        let high_byte = self.read_from_pc();
+
+        let addr = build_16_bit(high_byte, low_byte);
+
+        self.write(addr, self.registers.a);
+    }
+
+    pub(super) fn ld_ind_a(&mut self) {
+        let low_byte = self.read_from_pc();
+        let high_byte = self.read_from_pc();
+
+        let addr = build_16_bit(high_byte, low_byte);
+
+        self.registers.a = self.read(addr);
+    }
+
+    pub(super) fn str_imm_sp_hl(&mut self) {
+        let value = self.read_from_pc();
+
+        let result = ((self.registers.pc as i32) + (value as i32)) as u16;
+
+        self.registers.f.half_carry = half_carry_occurred_16(value as u16, self.registers.pc);
+        self.registers.f.carry = carry_occurred_16(value as u16, self.registers.pc);
+
+        self.registers.set_hl(result);
+    }
+
+    pub(super) fn ld_sp_hl(&mut self) {
+        self.registers.sp = self.registers.hl();
     }
 }

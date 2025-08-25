@@ -136,6 +136,16 @@ impl CPU {
         self.registers.f.carry = false;
     }
 
+    pub(super) fn and_imm_a(&mut self) {
+        let value = self.read_from_pc();
+
+        self.registers.a &= value;
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.sub = false;
+        self.registers.f.half_carry = true;
+        self.registers.f.carry = false;
+    }
+
     // Register XOR operations
     register_xor!(b);
     register_xor!(c);
@@ -157,6 +167,16 @@ impl CPU {
         self.registers.f.carry = false;
     }
 
+    pub(super) fn xor_imm_a(&mut self) {
+        let value = self.read_from_pc();
+
+        self.registers.a ^= value;
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.sub = false;
+        self.registers.f.half_carry = false;
+        self.registers.f.carry = false;
+    }
+
     // Register OR operations
     register_or!(b);
     register_or!(c);
@@ -172,6 +192,16 @@ impl CPU {
 
         self.registers.a ^= value;
 
+        self.registers.f.zero = self.registers.a == 0;
+        self.registers.f.sub = false;
+        self.registers.f.half_carry = false;
+        self.registers.f.carry = false;
+    }
+
+    pub(super) fn or_imm_a(&mut self) {
+        let value = self.read_from_pc();
+
+        self.registers.a |= value;
         self.registers.f.zero = self.registers.a == 0;
         self.registers.f.sub = false;
         self.registers.f.half_carry = false;

@@ -283,6 +283,17 @@ impl CPU {
         self._add_imm_a(true);
     }
 
+    pub(super) fn add_imm_sp(&mut self) {
+        let value = self.read_from_pc();
+        let result = ((self.registers.sp as i32) + (value as i8 as i32)) as u16;
+
+        let sp_low = (self.registers.sp & 0xFF) as u8;
+
+        self.registers.sp = result;
+        self.registers.f.half_carry = half_carry_occurred_8(sp_low, value);
+        self.registers.f.carry = carry_occurred_8(sp_low, value);
+    }
+
     // Subtraction operations
     pub(super) fn subtract_register(&mut self, register: u8, with_carry: bool) {
         let accumulator = self.registers.a;
