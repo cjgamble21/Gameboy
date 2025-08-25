@@ -14,8 +14,6 @@ use instructions::*;
 use registers::Registers;
 
 const BUS_SIZE: usize = std::u16::MAX as usize;
-const STACK_SIZE: usize = 1000;
-
 /*
     Future consideration for the CPU struct:
     When we get to interrupts / CPU state , can we make use of the type state pattern?

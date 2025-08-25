@@ -1,6 +1,6 @@
 use super::CPU;
 use super::registers::Registers;
-use crate::CPU::utils::{build_16_bit, carry_occurred_16, half_carry_occurred_16};
+use super::utils::*;
 use crate::Memory;
 use paste::paste;
 

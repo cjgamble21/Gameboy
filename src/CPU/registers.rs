@@ -1,6 +1,5 @@
+use super::utils::*;
 use paste::paste;
-
-use crate::CPU::utils::{build_16_bit, get_high_byte, get_low_byte};
 
 #[derive(Clone)]
 pub struct FlagRegister {
