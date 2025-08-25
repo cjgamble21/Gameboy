@@ -41,14 +41,47 @@ impl CPU {
         self.push(self.registers.bc())
     }
 
+    pub(super) fn push_de(&mut self) {
+        self.push(self.registers.de())
+    }
+
+    pub(super) fn push_hl(&mut self) {
+        self.push(self.registers.hl())
+    }
+
+    pub(super) fn push_af(&mut self) {
+        self.push(self.registers.af())
+    }
+
     // Pop instructions
-    pub(super) fn pop_bc(&mut self) {
+    fn pop(&mut self) -> u16 {
         let low_byte = self.read_from_sp();
         let high_byte = self.read_from_sp();
 
-        let new_bc = (high_byte | low_byte) as u16;
+        build_16_bit(high_byte, low_byte)
+    }
+    pub(super) fn pop_bc(&mut self) {
+        let new_bc = self.pop();
 
         self.registers.set_bc(new_bc);
+    }
+
+    pub(super) fn pop_de(&mut self) {
+        let new_de = self.pop();
+
+        self.registers.set_de(new_de);
+    }
+
+    pub(super) fn pop_hl(&mut self) {
+        let new_hl = self.pop();
+
+        self.registers.set_hl(new_hl);
+    }
+
+    pub(super) fn pop_af(&mut self) {
+        let new_af = self.pop();
+
+        self.registers.set_af(new_af);
     }
 
     pub(super) fn call(&mut self) {
@@ -57,9 +90,9 @@ impl CPU {
         self.push(self.registers.pc);
     }
 
-    pub(super) fn call_nz(&mut self) -> u32 {
+    fn conditional_call(&mut self, condition: bool) -> u32 {
         let mut num_cycles = 3;
-        if self.registers.f.zero {
+        if condition {
             self.registers.pc += 2;
             num_cycles
         } else {
@@ -70,17 +103,20 @@ impl CPU {
         }
     }
 
-    pub(super) fn call_z(&mut self) -> u32 {
-        let mut num_cycles = 3;
-        if !self.registers.f.zero {
-            self.registers.pc += 2;
-            num_cycles
-        } else {
-            self.call();
+    pub(super) fn call_nz(&mut self) -> u32 {
+        self.conditional_call(!self.registers.f.zero)
+    }
 
-            num_cycles = 6;
-            num_cycles
-        }
+    pub(super) fn call_z(&mut self) -> u32 {
+        self.conditional_call(self.registers.f.zero)
+    }
+
+    pub(super) fn call_nc(&mut self) -> u32 {
+        self.conditional_call(!self.registers.f.carry)
+    }
+
+    pub(super) fn call_c(&mut self) -> u32 {
+        self.conditional_call(self.registers.f.carry)
     }
 
     // Return instructions
@@ -96,9 +132,9 @@ impl CPU {
         self.registers.pc = new_pc;
     }
 
-    pub(super) fn ret_nz(&mut self) -> u32 {
+    pub(super) fn return_with_condition(&mut self, condition: bool) -> u32 {
         let mut num_cycles: u32 = 2;
-        if self.registers.f.zero {
+        if !condition {
             num_cycles
         } else {
             self.instr_return();
@@ -109,16 +145,19 @@ impl CPU {
         }
     }
 
+    pub(super) fn ret_nz(&mut self) -> u32 {
+        self.return_with_condition(!self.registers.f.zero)
+    }
+
     pub(super) fn ret_z(&mut self) -> u32 {
-        let mut num_cycles: u32 = 2;
-        if !self.registers.f.zero {
-            num_cycles
-        } else {
-            self.instr_return();
+        self.return_with_condition(self.registers.f.zero)
+    }
 
-            num_cycles = 5;
+    pub(super) fn ret_nc(&mut self) -> u32 {
+        self.return_with_condition(!self.registers.f.carry)
+    }
 
-            num_cycles
-        }
+    pub(super) fn ret_c(&mut self) -> u32 {
+        self.return_with_condition(self.registers.f.carry)
     }
 }

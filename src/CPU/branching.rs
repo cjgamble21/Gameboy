@@ -101,9 +101,9 @@ impl CPU {
         self.registers.pc = build_16_bit(high_byte, low_byte);
     }
 
-    pub(super) fn jump_nz(&mut self) -> u32 {
+    fn _jump(&mut self, condition: bool) -> u32 {
         let mut num_cycles = 3;
-        if self.registers.f.zero {
+        if condition {
             self.registers.pc += 2;
             num_cycles
         } else {
@@ -114,17 +114,20 @@ impl CPU {
         }
     }
 
-    pub(super) fn jump_z(&mut self) -> u32 {
-        let mut num_cycles = 3;
-        if !self.registers.f.zero {
-            self.registers.pc += 2;
-            num_cycles
-        } else {
-            self.jump_16_bit();
+    pub(super) fn jump_nz(&mut self) -> u32 {
+        self._jump(!self.registers.f.zero)
+    }
 
-            num_cycles = 4;
-            num_cycles
-        }
+    pub(super) fn jump_z(&mut self) -> u32 {
+        self._jump(self.registers.f.zero)
+    }
+
+    pub(super) fn jump_nc(&mut self) -> u32 {
+        self._jump(!self.registers.f.carry)
+    }
+
+    pub(super) fn jump_c(&mut self) -> u32 {
+        self._jump(self.registers.f.carry)
     }
 
     // Comparison instructions

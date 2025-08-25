@@ -1,5 +1,8 @@
 use paste::paste;
 
+use crate::CPU::utils::{build_16_bit, get_high_byte, get_low_byte};
+
+#[derive(Clone)]
 pub struct FlagRegister {
     pub zero: bool,
     pub sub: bool,
@@ -9,7 +12,12 @@ pub struct FlagRegister {
 
 impl FlagRegister {
     pub fn new() -> Self {
-        Self { zero: false, sub: false, half_carry: false, carry: false }
+        Self {
+            zero: false,
+            sub: false,
+            half_carry: false,
+            carry: false,
+        }
     }
 }
 
@@ -51,8 +59,8 @@ pub struct Registers {
     pub h: u8,
     pub l: u8,
     pub f: FlagRegister, // flags
-    pub sp: u16, // stack pointer
-    pub pc: u16, // program counter
+    pub sp: u16,         // stack pointer
+    pub pc: u16,         // program counter
 }
 
 macro_rules! reg_pairs {
@@ -74,10 +82,33 @@ macro_rules! reg_pairs {
 
 impl Registers {
     pub fn new() -> Self {
-        Self { a: 0, b: 0, c: 0, d: 0, e: 0, h: 0, l: 0, f: FlagRegister::new(), sp: 0, pc: 0 }
+        Self {
+            a: 0,
+            b: 0,
+            c: 0,
+            d: 0,
+            e: 0,
+            h: 0,
+            l: 0,
+            f: FlagRegister::new(),
+            sp: 0,
+            pc: 0,
+        }
     }
 
     reg_pairs!(b, c);
     reg_pairs!(d, e);
     reg_pairs!(h, l);
+
+    pub(super) fn af(&self) -> u16 {
+        build_16_bit(self.a, u8::from(self.f.clone()))
+    }
+
+    pub(super) fn set_af(&mut self, value: u16) {
+        let low_byte = get_low_byte(value);
+        let high_byte = get_high_byte(value);
+
+        self.a = low_byte;
+        self.f = FlagRegister::from(high_byte);
+    }
 }

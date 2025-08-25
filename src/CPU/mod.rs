@@ -82,4 +82,11 @@ impl CPU {
     fn set_half_carry_sub(&mut self, a: u8, b: u8) {
         self.registers.f.half_carry = a & 0xf < b & 0xf;
     }
+
+    fn no_impl(&self) {
+        unimplemented!(
+            "Attempted to invoke unimplemented opcode at PC={}",
+            self.registers.pc
+        );
+    }
 }

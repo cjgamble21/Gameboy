@@ -255,4 +255,9 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("CALL", CPU::call, 6),
     instr!("ADD_IMM_A_WITH_CARRY", CPU::add_imm_a_with_carry, 2),
     instr!("RST_1", CPU::reset_08, 4),
+    instr!("RET_NC", CPU::ret_nc),
+    instr!("POP_DE", CPU::pop_de, 3),
+    instr!("UNDEF", CPU::no_impl, 0),
+    instr!("CALL_NC", CPU::call_nc),
+    instr!("PUSH_DE", CPU::push_de, 4),
 ];
