@@ -7,6 +7,7 @@ mod interrupts;
 mod memory;
 mod registers;
 mod stack;
+mod test_helpers;
 mod utils;
 
 use std::{cell::RefCell, rc::Rc};

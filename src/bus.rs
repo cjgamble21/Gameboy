@@ -1,3 +1,5 @@
+use std::io::Write;
+
 pub trait Bus {
     fn read(&self, addr: u16) -> u8;
     fn write(&mut self, addr: u16, data: u8);
@@ -13,7 +15,7 @@ pub struct SystemBus {
 impl SystemBus {
     pub fn new() -> Self {
         Self {
-            memory: Vec::with_capacity(BUS_SIZE),
+            memory: vec![0; BUS_SIZE],
         }
     }
 }

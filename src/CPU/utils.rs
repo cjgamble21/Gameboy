@@ -51,7 +51,6 @@ pub(super) fn build_16_bit(high: u8, low: u8) -> u16 {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod tests {
     use super::*;
 
