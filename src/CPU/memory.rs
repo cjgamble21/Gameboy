@@ -1,7 +1,6 @@
 use super::CPU;
 use super::registers::Registers;
 use super::utils::*;
-use crate::Memory;
 use paste::paste;
 
 /*

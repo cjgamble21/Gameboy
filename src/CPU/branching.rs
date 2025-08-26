@@ -1,6 +1,5 @@
 use super::CPU;
 use super::utils::*;
-use crate::Memory;
 use paste::paste;
 
 macro_rules! register_cmp {

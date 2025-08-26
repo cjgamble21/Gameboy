@@ -1,5 +1,4 @@
 use super::CPU;
-use crate::Memory;
 use paste::paste;
 
 macro_rules! register_and {

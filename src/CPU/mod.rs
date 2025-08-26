@@ -9,11 +9,12 @@ mod registers;
 mod stack;
 mod utils;
 
-use crate::Memory;
+use std::{cell::RefCell, rc::Rc};
+
+use crate::bus::{Bus, SystemBus};
 use instructions::*;
 use registers::Registers;
 
-const BUS_SIZE: usize = std::u16::MAX as usize;
 /*
     Future consideration for the CPU struct:
     When we get to interrupts / CPU state , can we make use of the type state pattern?
@@ -21,27 +22,17 @@ const BUS_SIZE: usize = std::u16::MAX as usize;
     Interrupts being enabled / disabled, etc.
 */
 pub struct CPU {
-    memory: Vec<u8>,
     registers: Registers,
     cycles: u32,
-}
-
-impl Memory for CPU {
-    fn read(&self, addr: u16) -> u8 {
-        self.memory[addr as usize]
-    }
-
-    fn write(&mut self, addr: u16, data: u8) {
-        self.memory[addr as usize] = data;
-    }
+    bus: Rc<RefCell<SystemBus>>,
 }
 
 impl CPU {
-    pub fn new() -> Self {
+    pub fn new(bus: Rc<RefCell<SystemBus>>) -> Self {
         Self {
-            memory: Vec::with_capacity(BUS_SIZE),
             registers: Registers::new(),
             cycles: 0,
+            bus: bus,
         }
     }
 
@@ -49,6 +40,14 @@ impl CPU {
         let opcode = self.read_from_pc();
 
         self.execute(opcode);
+    }
+
+    fn read(&self, addr: u16) -> u8 {
+        self.bus.borrow().read(addr)
+    }
+
+    fn write(&mut self, addr: u16, value: u8) {
+        self.bus.borrow_mut().write(addr, value)
     }
 
     // TODO: Verify we always need to increment PC after reading from it

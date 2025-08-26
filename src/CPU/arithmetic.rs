@@ -1,5 +1,3 @@
-use crate::Memory;
-
 use super::CPU;
 use super::utils::*;
 use paste::paste;

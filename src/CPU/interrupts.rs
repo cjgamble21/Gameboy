@@ -1,5 +1,4 @@
 use super::CPU;
-use crate::Memory;
 
 impl CPU {
     pub(super) fn enable_interrupts(&mut self) {

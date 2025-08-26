@@ -1,5 +1,4 @@
 use super::CPU;
-use super::Memory;
 use super::utils::*;
 
 impl CPU {
