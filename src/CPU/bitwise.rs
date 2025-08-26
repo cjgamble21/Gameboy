@@ -115,6 +115,7 @@ impl CPU {
     }
 
     // Register AND operations
+    register_and!(a);
     register_and!(b);
     register_and!(c);
     register_and!(d);
@@ -146,6 +147,7 @@ impl CPU {
     }
 
     // Register XOR operations
+    register_xor!(a);
     register_xor!(b);
     register_xor!(c);
     register_xor!(d);
@@ -177,6 +179,7 @@ impl CPU {
     }
 
     // Register OR operations
+    register_or!(a);
     register_or!(b);
     register_or!(c);
     register_or!(d);

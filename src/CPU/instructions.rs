@@ -178,7 +178,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("ADD_A_H", CPU::add_a_h, 1),
     instr!("ADD_A_L", CPU::add_a_l, 1),
     instr!("ADD_IND_HL_A", CPU::add_ind_hl_a, 2),
-    instr!("ADD_A_A", CPU::nop, 1),
+    instr!("ADD_A_A", CPU::add_a_a, 1),
     instr!("ADD_A_B_WITH_CARRY", CPU::add_a_b_with_carry, 1),
     instr!("ADD_A_C_WITH_CARRY", CPU::add_a_c_with_carry, 1),
     instr!("ADD_A_D_WITH_CARRY", CPU::add_a_d_with_carry, 1),
@@ -186,7 +186,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("ADD_A_H_WITH_CARRY", CPU::add_a_h_with_carry, 1),
     instr!("ADD_A_L_WITH_CARRY", CPU::add_a_l_with_carry, 1),
     instr!("ADD_IND_HL_A_WITH_CARRY", CPU::add_ind_hl_a_with_carry, 2),
-    instr!("ADD_A_A_WITH_CARRY", CPU::nop, 1),
+    instr!("ADD_A_A_WITH_CARRY", CPU::add_a_a_with_carry, 1),
     instr!("SUB_A_B", CPU::subtract_a_b, 1),
     instr!("SUB_A_C", CPU::subtract_a_c, 1),
     instr!("SUB_A_D", CPU::subtract_a_d, 1),
@@ -194,7 +194,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("SUB_A_H", CPU::subtract_a_h, 1),
     instr!("SUB_A_L", CPU::subtract_a_l, 1),
     instr!("SUB_IND_HL_A", CPU::subtract_ind_hl_a, 2),
-    instr!("SUB_A_A", CPU::nop, 1),
+    instr!("SUB_A_A", CPU::subtract_a_a, 1),
     instr!("SUB_A_B_WITH_CARRY", CPU::subtract_a_b_with_carry, 1),
     instr!("SUB_A_C_WITH_CARRY", CPU::subtract_a_c_with_carry, 1),
     instr!("SUB_A_D_WITH_CARRY", CPU::subtract_a_d_with_carry, 1),
@@ -206,7 +206,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
         CPU::subtract_ind_hl_a_with_carry,
         2
     ),
-    instr!("SUB_A_A_WITH_CARRY", CPU::nop, 1),
+    instr!("SUB_A_A_WITH_CARRY", CPU::subtract_a_a_with_carry, 1),
     instr!("AND_A_B", CPU::and_a_b, 1),
     instr!("AND_A_C", CPU::and_a_c, 1),
     instr!("AND_A_D", CPU::and_a_d, 1),
@@ -214,7 +214,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("AND_A_H", CPU::and_a_h, 1),
     instr!("AND_A_L", CPU::and_a_l, 1),
     instr!("AND_IND_HL_A", CPU::and_ind_hl_a, 2),
-    instr!("AND_A_A", CPU::nop, 1),
+    instr!("AND_A_A", CPU::and_a_a, 1),
     instr!("XOR_A_B", CPU::xor_a_b, 1),
     instr!("XOR_A_C", CPU::xor_a_c, 1),
     instr!("XOR_A_D", CPU::xor_a_d, 1),
@@ -222,7 +222,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("XOR_A_H", CPU::xor_a_h, 1),
     instr!("XOR_A_L", CPU::xor_a_l, 1),
     instr!("XOR_IND_HL_A", CPU::xor_ind_hl_a, 2),
-    instr!("XOR_A_A", CPU::nop, 1), // Should this be a nop?
+    instr!("XOR_A_A", CPU::xor_a_a, 1), // Should this be a nop?
     instr!("OR_A_B", CPU::or_a_b, 1),
     instr!("OR_A_C", CPU::or_a_c, 1),
     instr!("OR_A_D", CPU::or_a_d, 1),
@@ -230,7 +230,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("OR_A_H", CPU::or_a_h, 1),
     instr!("OR_A_L", CPU::or_a_l, 1),
     instr!("OR_IND_HL_A", CPU::or_ind_hl_a, 2),
-    instr!("OR_A_A", CPU::nop, 1), // Should this be a nop?
+    instr!("OR_A_A", CPU::or_a_a, 1), // Should this be a nop?
     instr!("CMP_A_B", CPU::cmp_a_b, 1),
     instr!("CMP_A_C", CPU::cmp_a_c, 1),
     instr!("CMP_A_D", CPU::cmp_a_d, 1),
@@ -238,7 +238,7 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("CMP_A_H", CPU::cmp_a_h, 1),
     instr!("CMP_A_L", CPU::cmp_a_l, 1),
     instr!("CMP_IND_HL_A", CPU::cmp_ind_hl_a, 2),
-    instr!("CMP_A_A", CPU::nop, 1), // not a nop
+    instr!("CMP_A_A", CPU::cmp_a_a, 1), // not a nop
     instr!("RET_NZ", CPU::ret_nz),
     instr!("POP_BC", CPU::pop_bc, 3),
     instr!("JMP_NZ", CPU::jump_nz),

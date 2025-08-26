@@ -134,6 +134,7 @@ impl CPU {
     }
 
     // Comparison instructions
+    register_cmp!(a);
     register_cmp!(b);
     register_cmp!(c);
     register_cmp!(d);

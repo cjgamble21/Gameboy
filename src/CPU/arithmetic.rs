@@ -229,6 +229,7 @@ impl CPU {
         self.add_register(value, true);
     }
 
+    add_register!(a);
     add_register!(b);
     add_register!(c);
     add_register!(d);
@@ -236,6 +237,7 @@ impl CPU {
     add_register!(h);
     add_register!(l);
 
+    add_register_with_carry!(a);
     add_register_with_carry!(b);
     add_register_with_carry!(c);
     add_register_with_carry!(d);
@@ -327,6 +329,7 @@ impl CPU {
         self.subtract_register(value, true);
     }
 
+    subtract_register!(a);
     subtract_register!(b);
     subtract_register!(c);
     subtract_register!(d);
@@ -334,6 +337,7 @@ impl CPU {
     subtract_register!(h);
     subtract_register!(l);
 
+    subtract_register_with_carry!(a);
     subtract_register_with_carry!(b);
     subtract_register_with_carry!(c);
     subtract_register_with_carry!(d);
