@@ -1,6 +1,7 @@
 pub trait Bus {
     fn read(&self, addr: u16) -> u8;
     fn write(&mut self, addr: u16, data: u8);
+    fn request_interrupt(&mut self);
 }
 
 const BUS_SIZE: usize = std::u16::MAX as usize + 1;
@@ -24,5 +25,9 @@ impl Bus for SystemBus {
 
     fn write(&mut self, addr: u16, data: u8) {
         self.memory[addr as usize] = data;
+    }
+
+    fn request_interrupt(&mut self) {
+        unimplemented!("TODO: implement interrupt requests")
     }
 }
