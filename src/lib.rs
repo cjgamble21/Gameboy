@@ -8,11 +8,13 @@ mod bus;
 #[path = "CPU/mod.rs"]
 mod cpu;
 
+#[allow(dead_code)]
 pub struct Emulator {
     bus: Rc<RefCell<SystemBus>>,
     cpu: CPU,
 }
 
+#[allow(dead_code)]
 impl Emulator {
     fn new() -> Self {
         let bus = Rc::new(RefCell::new(SystemBus::new()));
