@@ -5,6 +5,8 @@ use crate::bus::SystemBus;
 use crate::cpu::CPU;
 
 mod bus;
+#[path = "Cartridge/mod.rs"]
+mod cartridge;
 #[path = "CPU/mod.rs"]
 mod cpu;
 

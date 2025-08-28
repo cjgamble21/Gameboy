@@ -1,14 +1,16 @@
+use crate::bus::Bus;
+
 use super::CPU;
 
 const INTERRUPT_ADDRESS: u16 = 0xFFFF;
 
 impl CPU {
     pub(super) fn enable_interrupts(&mut self) {
-        self.write(INTERRUPT_ADDRESS, 1)
+        self.bus.borrow_mut().enable_interrupts();
     }
 
     pub(super) fn disable_interrupts(&mut self) {
-        self.write(INTERRUPT_ADDRESS, 0)
+        self.bus.borrow_mut().disable_interrupts();
     }
 }
 
