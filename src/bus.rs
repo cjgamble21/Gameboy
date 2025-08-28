@@ -7,6 +7,7 @@ pub trait Bus {
     fn request_interrupt(&mut self);
     fn enable_interrupts(&mut self);
     fn disable_interrupts(&mut self);
+    fn interrupts_enabled(&self) -> bool;
 }
 
 const VRAM_SIZE: usize = 8 * 1024;
@@ -103,5 +104,9 @@ impl Bus for SystemBus {
 
     fn disable_interrupts(&mut self) {
         self.interrupts_enabled = false;
+    }
+
+    fn interrupts_enabled(&self) -> bool {
+        self.interrupts_enabled
     }
 }

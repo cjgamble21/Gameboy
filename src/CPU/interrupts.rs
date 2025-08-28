@@ -2,8 +2,6 @@ use crate::bus::Bus;
 
 use super::CPU;
 
-const INTERRUPT_ADDRESS: u16 = 0xFFFF;
-
 impl CPU {
     pub(super) fn enable_interrupts(&mut self) {
         self.bus.borrow_mut().enable_interrupts();
@@ -16,7 +14,7 @@ impl CPU {
 
 #[cfg(test)]
 mod tests {
-    use crate::cpu::{interrupts::INTERRUPT_ADDRESS, test_helpers::make_cpu};
+    use crate::cpu::test_helpers::make_cpu;
 
     #[test]
     fn test_enable_interrupts() {
@@ -24,6 +22,6 @@ mod tests {
 
         cpu.enable_interrupts();
 
-        assert_eq!(cpu.read(INTERRUPT_ADDRESS), 1)
+        assert_eq!(cpu.bus.borrow().interrupts_enabled(), true)
     }
 }

@@ -25,11 +25,11 @@ use registers::Registers;
 pub struct CPU {
     registers: Registers,
     cycles: u32,
-    bus: Rc<RefCell<SystemBus>>,
+    bus: Rc<RefCell<dyn Bus>>,
 }
 
 impl CPU {
-    pub fn new(bus: Rc<RefCell<SystemBus>>) -> Self {
+    pub fn new(bus: Rc<RefCell<dyn Bus>>) -> Self {
         Self {
             registers: Registers::new(),
             cycles: 0,
