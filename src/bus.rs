@@ -68,6 +68,7 @@ impl Bus for SystemBus {
     fn read(&self, addr: u16) -> u8 {
         // TODO: Implement memory mapping
         match (addr) {
+            0x0000..=0x7FFF => self.cartridge.rom[addr as usize],
             _ => 0,
         }
     }
