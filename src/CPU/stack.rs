@@ -5,18 +5,19 @@ impl CPU {
     fn read_from_sp(&mut self) -> u8 {
         let addr = self.registers.sp;
         let value = self.read(addr);
-        self.registers.sp += 1;
+        wrapping_add(&mut self.registers.sp, 1);
 
         value
     }
 
     // Push instructions
     fn push(&mut self, value: u16) {
-        self.registers.sp -= 1;
+        wrapping_sub(&mut self.registers.sp, 1);
+        self.registers.sp = self.registers.sp.wrapping_sub(1);
         let high_byte = get_high_byte(value);
         self.write(self.registers.sp, high_byte);
 
-        self.registers.sp -= 1;
+        wrapping_sub(&mut self.registers.sp, 1);
         let low_byte = get_low_byte(value);
         self.write(self.registers.sp, low_byte);
     }
@@ -78,7 +79,7 @@ impl CPU {
     fn conditional_call(&mut self, condition: bool) -> u32 {
         let mut num_cycles = 3;
         if condition {
-            self.registers.pc += 2;
+            wrapping_add(&mut self.registers.pc, 2);
             num_cycles
         } else {
             self.call();

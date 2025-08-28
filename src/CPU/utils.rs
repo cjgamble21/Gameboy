@@ -1,3 +1,11 @@
+pub(super) fn wrapping_add(value: &mut u16, amount: u16) {
+    value.wrapping_add(amount);
+}
+
+pub(super) fn wrapping_sub(value: &mut u16, amount: u16) {
+    value.wrapping_sub(amount);
+}
+
 pub(super) fn carry_occurred_8(a: u8, b: u8) -> bool {
     (a as u16) + (b as u16) > 0xff
 }

@@ -20,10 +20,10 @@ macro_rules! dec_8_bit {
     ($reg:ident) => {
         paste! {
             pub(super) fn [<dec_ $reg>](&mut self) {
-                self.set_half_carry_sub(self.registers.$reg, self.registers.$reg - 1);
+                self.set_half_carry_sub(self.registers.$reg, self.registers.$reg.wrapping_sub(1));
                 self.set_sub_flag(true);
 
-                self.registers.$reg -= 1;
+                self.registers.$reg = self.registers.$reg.wrapping_sub(1);
                 self.set_zero_flag(self.registers.$reg);
             }
         }

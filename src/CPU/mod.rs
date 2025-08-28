@@ -85,7 +85,7 @@ impl CPU {
     }
 
     fn no_impl(&self) {
-        unimplemented!(
+        println!(
             "Attempted to invoke unimplemented opcode at PC={}",
             self.registers.pc
         );
