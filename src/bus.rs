@@ -67,15 +67,20 @@ impl SystemBus {
 impl Bus for SystemBus {
     fn read(&self, addr: u16) -> u8 {
         // TODO: Implement memory mapping
-        match (addr) {
+        match addr {
             0x0000..=0x7FFF => self.cartridge.rom[addr as usize],
+            0x8000..=0x9FFF => self.vram[(addr - VRAM_OFFSET) as usize],
+            0xC000..=0xDFFF => self.wram[(addr - WRAM_OFFSET) as usize],
+            0xFE00..=0xFE9F => self.oam[(addr - OAM_OFFSET) as usize],
+            0xFF80..=0xFFFE => self.hram[(addr - HRAM_OFFSET) as usize],
+            0xFFFF => self.interrupts_enabled as u8,
             _ => 0,
         }
     }
 
     fn write(&mut self, addr: u16, data: u8) {
         // TODO: Implement memory mapping
-        match (addr) {
+        match addr {
             _ => {}
         }
     }
