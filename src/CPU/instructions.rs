@@ -5,7 +5,7 @@ type CPUCycles = u32; // Specifically M-cycle representation, not T-cycle
 type InstructionFn = fn(&mut CPU) -> CPUCycles;
 
 pub struct Instruction {
-    name: &'static str,
+    pub name: &'static str,
     pub function: InstructionFn,
 }
 

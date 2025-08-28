@@ -54,12 +54,14 @@ impl CPU {
     // TODO: Verify we always need to increment PC after reading from it
     fn read_from_pc(&mut self) -> u8 {
         let value = self.read(self.registers.pc);
-        self.registers.pc += 1;
+        self.registers.pc = self.registers.pc.wrapping_add(1);
         value
     }
 
     fn execute(&mut self, opcode: u8) {
         let instruction = &INSTRUCTIONS[opcode as usize];
+
+        println!("Executing instruction: {} {}", instruction.name, opcode);
 
         let cycles = (instruction.function)(self);
 

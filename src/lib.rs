@@ -18,10 +18,16 @@ pub struct Emulator {
 
 #[allow(dead_code)]
 impl Emulator {
-    fn new() -> Self {
-        let bus = Rc::new(RefCell::new(SystemBus::new("./tetris.gb")));
+    pub fn new(file_name: &str) -> Self {
+        let bus = Rc::new(RefCell::new(SystemBus::new(file_name)));
         let cpu = CPU::new(bus.clone());
 
         Self { bus, cpu }
+    }
+
+    pub fn execute(&mut self) {
+        loop {
+            self.cpu.tick();
+        }
     }
 }

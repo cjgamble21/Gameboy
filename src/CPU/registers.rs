@@ -91,7 +91,7 @@ impl Registers {
             l: 0,
             f: FlagRegister::new(),
             sp: 0,
-            pc: 0,
+            pc: 0x100,
         }
     }
 
