@@ -14,9 +14,16 @@ pub trait Bus {
 }
 
 const VRAM_SIZE: usize = 8 * 1024;
+const VRAM_OFFSET: u16 = 0x8000;
+
 const WRAM_SIZE: usize = 8 * 1024;
+const WRAM_OFFSET: u16 = 0xC000;
+
 const OAM_SIZE: usize = 160;
+const OAM_OFFSET: u16 = 0xFE00;
+
 const HRAM_SIZE: usize = 127;
+const HRAM_OFFSET: u16 = 0xFF80;
 
 pub struct SystemBus {
     cartridge: Cartridge,
@@ -35,11 +42,12 @@ pub fn load_cartridge(name: &str) -> Cartridge {
         Ok(file) => file,
     };
 
-    let buffer = &mut Vec::<u8>::new();
+    let size = file.metadata().unwrap().len();
+    let mut buffer = Vec::<u8>::with_capacity(size as usize);
 
-    match file.read_to_end(buffer) {
+    match file.read_to_end(&mut buffer) {
         Err(why) => panic!("Error reading cartridge data {}", why),
-        Ok(_) => Cartridge {},
+        Ok(_) => Cartridge::new(size, buffer),
     }
 }
 
@@ -67,7 +75,7 @@ impl Bus for SystemBus {
     fn write(&mut self, addr: u16, data: u8) {
         // TODO: Implement memory mapping
         match (addr) {
-            _ => 0,
+            _ => {}
         }
     }
 

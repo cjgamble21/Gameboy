@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(super) fn make_cpu() -> CPU {
-    let new_cpu = CPU::new(Rc::new(RefCell::new(SystemBus::new())));
+    let new_cpu = CPU::new(Rc::new(RefCell::new(SystemBus::new(""))));
 
     new_cpu
 }

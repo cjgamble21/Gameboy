@@ -19,7 +19,7 @@ pub struct Emulator {
 #[allow(dead_code)]
 impl Emulator {
     fn new() -> Self {
-        let bus = Rc::new(RefCell::new(SystemBus::new()));
+        let bus = Rc::new(RefCell::new(SystemBus::new("./tetris.gb")));
         let cpu = CPU::new(bus.clone());
 
         Self { bus, cpu }
