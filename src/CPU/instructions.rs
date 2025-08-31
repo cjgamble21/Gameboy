@@ -10,7 +10,7 @@ pub struct Instruction {
 }
 
 impl Instruction {
-    pub const fn new(name: &'static str, function: InstructionFn) -> Self {
+    pub(super) const fn new(name: &'static str, function: InstructionFn) -> Self {
         Instruction { name, function }
     }
 }
@@ -29,12 +29,21 @@ macro_rules! instr {
     };
 }
 
+macro_rules! prefixed_instr {
+    ($name: expr, $func: expr) => {
+        Instruction::new($name, |cpu| {
+            $func(cpu);
+            2 // All prefixed instructions take two CPU cycles
+        })
+    };
+}
+
 /*
     This can just be a normal const array in the future -
     I declared it static to avoid the language server yelling at me as I add instructions
 */
 // Index of each instruction corresponds to its relevant opcode
-pub const INSTRUCTIONS: &'static [Instruction] = &[
+pub(super) const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("NOP", CPU::nop, 1),
     instr!("LD_IMM_BC", CPU::ld_imm_bc, 3),
     instr!("STR_IND_BC_A", CPU::str_ind_bc_a, 2),
@@ -250,7 +259,12 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("RET_Z", CPU::ret_z),
     instr!("RET", CPU::instr_return, 4),
     instr!("JMP_Z", CPU::jump_z),
-    instr!("PREFIX", CPU::nop, 1), // TODO: Implement CB prefix instructions
+    instr!("PREFIX", |cpu: &mut CPU| {
+        let opcode = cpu.read_from_pc();
+        let instruction = &PREFIXED_INSTRUCTIONS[opcode as usize];
+
+        (instruction.function)(cpu)
+    }),
     instr!("CALL_Z", CPU::call_z),
     instr!("CALL", CPU::call, 6),
     instr!("ADD_IMM_A_WITH_CARRY", CPU::add_imm_a_with_carry, 2),
@@ -303,4 +317,15 @@ pub const INSTRUCTIONS: &'static [Instruction] = &[
     instr!("UNDEF", CPU::no_impl, 0),
     instr!("CMP_IMM_A", CPU::cmp_imm_a, 2),
     instr!("RST_7", CPU::reset_38, 4),
+];
+
+const PREFIXED_INSTRUCTIONS: &'static [Instruction] = &[
+    prefixed_instr!("RLC_B", CPU::rotate_left_carry_b),
+    prefixed_instr!("RLC_C", CPU::rotate_left_carry_c),
+    prefixed_instr!("RLC_D", CPU::rotate_left_carry_d),
+    prefixed_instr!("RLC_E", CPU::rotate_left_carry_e),
+    prefixed_instr!("RLC_H", CPU::rotate_left_carry_h),
+    prefixed_instr!("RLC_L", CPU::rotate_left_carry_l),
+    prefixed_instr!("RLC_IND_HL", CPU::rotate_left_carry_ind_hl),
+    prefixed_instr!("RLC_A", CPU::rotate_left_carry_a),
 ];

@@ -5,6 +5,7 @@ mod control;
 mod instructions;
 mod interrupts;
 mod memory;
+mod prefixed_instrs;
 mod registers;
 mod stack;
 mod test_helpers;

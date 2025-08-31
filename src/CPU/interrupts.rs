@@ -1,5 +1,3 @@
-use crate::bus::Bus;
-
 use super::CPU;
 
 impl CPU {
